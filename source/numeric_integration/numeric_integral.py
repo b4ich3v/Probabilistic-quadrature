@@ -35,5 +35,5 @@ class NumericIntegral(ABC):
                 raise RuntimeError("Nodes must be uniformly spaced across the interval")
 
     @abstractmethod
-    def integrate(self):
+    def integrate(self) -> float:
         raise RuntimeError("Not implemented yet")
