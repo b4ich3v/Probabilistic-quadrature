@@ -23,10 +23,10 @@ class Function:
     def name(self) -> str:
         return self.__name
 
-    def __call__(self, x: float | Sequence[float]) -> float | list[float]:
-        if isinstance(x, (list, tuple)):
-            return [self.__evaluate_single(xi) for xi in x]
-        return self.__evaluate_single(x)
+    def __call__(self, input_values: float | Sequence[float]) -> float | list[float]:
+        if isinstance(input_values, (list, tuple)):
+            return [self.__evaluate_single(current_input_value) for current_input_value in input_values]
+        return self.__evaluate_single(input_values)
 
     def __evaluate_single(self, x: float) -> float:
         if not self.__domain.contains(x):
