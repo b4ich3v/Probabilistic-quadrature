@@ -4,30 +4,30 @@ class Interval:
             raise RuntimeError("Right component must be greater than left")
         if not isinstance(left_component, (int, float)) or not isinstance(right_component, (int, float)):
             raise RuntimeError("Left and right input components must be numeric")
-        self.__set_left_component(float(left_component))
-        self.__set_right_component(float(right_component))
+        self._set_left_component(float(left_component))
+        self._set_right_component(float(right_component))
 
-    def __set_left_component(self, left) -> None:
-        self.__left = left
+    def _set_left_component(self, left) -> None:
+        self._left = left
 
-    def __set_right_component(self, right) -> None:
-        self.__right = right
+    def _set_right_component(self, right) -> None:
+        self._right = right
 
     def get_left_component(self) -> float | int:
-        return self.__left
+        return self._left
 
     def get_right_component(self) -> float | int:
-        return self.__right
+        return self._right
 
     def get_len_of_interval(self) -> float:
-        return self.__right - self.__left
+        return self._right - self._left
 
     @property
     def width(self) -> float:
-        return self.__right - self.__left
+        return self._right - self._left
 
     def contains(self, input_value: int | float) -> bool:
-        return self.__left <= input_value and input_value <= self.__right
+        return self._left <= input_value and input_value <= self._right
 
     def __contains__(self, input_value: int | float) -> bool:
         return self.contains(input_value)
@@ -35,33 +35,33 @@ class Interval:
     def __eq__(self, other) -> bool:
         if not isinstance(other, Interval):
             return NotImplemented
-        return self.__left == other.__left and self.__right == other.__right
+        return self._left == other._left and self._right == other._right
 
     def __lt__(self, other) -> bool:
         if not isinstance(other, Interval):
             return NotImplemented
-        return (self.__left, self.__right) < (other.__left, other.__right)
+        return (self._left, self._right) < (other._left, other._right)
 
     def __le__(self, other) -> bool:
         if not isinstance(other, Interval):
             return NotImplemented
-        return (self.__left, self.__right) <= (other.__left, other.__right)
+        return (self._left, self._right) <= (other._left, other._right)
 
     def __gt__(self, other) -> bool:
         if not isinstance(other, Interval):
             return NotImplemented
-        return (self.__left, self.__right) > (other.__left, other.__right)
+        return (self._left, self._right) > (other._left, other._right)
 
     def __ge__(self, other) -> bool:
         if not isinstance(other, Interval):
             return NotImplemented
-        return (self.__left, self.__right) >= (other.__left, other.__right)
+        return (self._left, self._right) >= (other._left, other._right)
 
     def __hash__(self) -> int:
-        return hash((self.__left, self.__right))
+        return hash((self._left, self._right))
 
     def __repr__(self) -> str:
-        return f"Interval({self.__left}, {self.__right})"
+        return f"Interval({self._left}, {self._right})"
 
     def __str__(self) -> str:
-        return f"[{self.__left}, {self.__right}]"
+        return f"[{self._left}, {self._right}]"

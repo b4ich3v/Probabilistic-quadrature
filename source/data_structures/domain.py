@@ -11,24 +11,24 @@ class Domain:
             intervals = list(input_intervals)
         if len(intervals) == 0:
             raise RuntimeError("Domain must have at least one interval")
-        self.__is_continuous = len(intervals) == 1
-        self.__predicate = input_predicate
-        self.__intervals = intervals
+        self._is_continuous = len(intervals) == 1
+        self._predicate = input_predicate
+        self._intervals = intervals
 
     def get_intervals(self) -> list[Interval] | Interval:
-        return self.__intervals[0] if self.__is_continuous else self.__intervals
+        return self._intervals[0] if self._is_continuous else self._intervals
     
     @property
     def intervals(self) -> list[Interval]:
-        return self.__intervals
+        return self._intervals
     
     def contains(self, input_value: float | int) -> bool:
-        predicate = self.__predicate
+        predicate = self._predicate
         if predicate is not None and not predicate(input_value):
             return False
 
-        if self.__is_continuous:
-            interval = self.__intervals[0]
+        if self._is_continuous:
+            interval = self._intervals[0]
             return interval.contains(input_value)
 
-        return any(interval.contains(input_value) for interval in self.__intervals)
+        return any(interval.contains(input_value) for interval in self._intervals)
