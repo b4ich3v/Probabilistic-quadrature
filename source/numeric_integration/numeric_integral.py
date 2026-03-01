@@ -15,5 +15,5 @@ class NumericIntegral(ABC):
         self._nodes = input_x_coords
 
     @abstractmethod
-    def integrate(self, interval: Interval):
+    def integrate(self):
         raise RuntimeError("Not implemented yet")
