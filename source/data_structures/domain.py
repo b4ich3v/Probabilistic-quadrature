@@ -1,27 +1,26 @@
-from typing import Callable
+from typing import Callable, Sequence
 
 from source.data_structures.interval import Interval
 
 
 class Domain:
-    def __init__(self, input_intervals: list[Interval] | Interval | None, input_predicate: Callable[[float], bool] | None = None):
-        if len(input_intervals) == 0:
+    def __init__(self, input_intervals: Interval | Sequence[Interval], input_predicate: Callable[[float], bool] | None = None):
+        if isinstance(input_intervals, Interval):
+            intervals: list[Interval] = [input_intervals]
+        else:
+            intervals = list(input_intervals)
+        if len(intervals) == 0:
             raise RuntimeError("Domain must have at least one interval")
-        if self.__determine_continuously(input_intervals):
-            self.__is_continuous = True
-        else: 
-            self.__is_continuous = False
+        self.__is_continuous = len(intervals) == 1
         self.__predicate = input_predicate
-        self.__intervals = input_intervals
-
-    def __determine_continuously(self, input_intervals) -> bool:
-        return len(input_intervals) == 1
+        self.__intervals = intervals
 
     def get_intervals(self) -> list[Interval] | Interval:
-        if self.__is_continuous:
-            return self.__intervals[0]
-        else:
-            return self.__intervals
+        return self.__intervals[0] if self.__is_continuous else self.__intervals
+    
+    @property
+    def intervals(self) -> list[Interval]:
+        return self.__intervals
     
     def contains(self, input_value: float | int) -> bool:
         predicate = self.__predicate
@@ -32,7 +31,4 @@ class Domain:
             interval = self.__intervals[0]
             return interval.contains(input_value)
 
-        for interval in self.__intervals:
-            if interval.contains(input_value):
-                return True
-        return False
+        return any(interval.contains(input_value) for interval in self.__intervals)
