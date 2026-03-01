@@ -9,6 +9,6 @@ class TrapezoidNumericIntegral(NumericIntegral):
     def integrate(self):
         result = 0
         for i in range(1, self._sub_intervals + 1):
-            result += (self._function(self._nodes[i-1]) + self._function(self._nodes[i]))
+            result += (self._function(self._nodes[i - 1]) + self._function(self._nodes[i]))
         result *= (self._interval.width) / (2 * self._sub_intervals)
         return result

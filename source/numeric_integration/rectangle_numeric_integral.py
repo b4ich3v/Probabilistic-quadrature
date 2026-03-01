@@ -9,6 +9,6 @@ class RectangleNumericIntegral(NumericIntegral):
     def integrate(self):
         result = 0
         for i in range(1, self._sub_intervals + 1):
-            result += self._function((self._nodes[i-1] + self._nodes[i]) / 2)
+            result += self._function((self._nodes[i - 1] + self._nodes[i]) / 2)
         result *= (self._interval.width) / self._sub_intervals
         return result
