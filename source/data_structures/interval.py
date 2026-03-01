@@ -22,8 +22,15 @@ class Interval:
     def get_len_of_interval(self) -> float:
         return self.__right - self.__left
 
+    @property
+    def width(self) -> float:
+        return self.__right - self.__left
+
     def contains(self, input_value: int | float) -> bool:
         return self.__left <= input_value and input_value <= self.__right
+
+    def __contains__(self, input_value: int | float) -> bool:
+        return self.contains(input_value)
 
     def __eq__(self, other) -> bool:
         if not isinstance(other, Interval):
@@ -49,6 +56,9 @@ class Interval:
         if not isinstance(other, Interval):
             return NotImplemented
         return (self.__left, self.__right) >= (other.__left, other.__right)
+
+    def __hash__(self) -> int:
+        return hash((self.__left, self.__right))
 
     def __repr__(self) -> str:
         return f"Interval({self.__left}, {self.__right})"
