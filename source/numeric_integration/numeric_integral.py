@@ -6,13 +6,14 @@ from source.data_structures.function import Function
 
 
 class NumericIntegral(ABC):
-    def __init__(self, input_function: Function, input_interval: Interval, input_x_coords: list[float], input_sub_intervals: int) -> None:
+    def __init__(self, input_function: Function, input_interval: Interval, input_x_coords: list[float], input_sub_intervals: int, validate: bool = True) -> None:
         self._interval = input_interval
         self._function = input_function
         self._sub_intervals = input_sub_intervals
         self._nodes = input_x_coords
-        self._validate_sub_intervals()
-        self._validate_nodes()
+        if validate:
+            self._validate_sub_intervals()
+            self._validate_nodes()
 
     def _validate_sub_intervals(self) -> None:
         if self._sub_intervals <= 0:
