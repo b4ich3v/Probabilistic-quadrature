@@ -18,4 +18,40 @@ class Interval:
 
     def get_right_component(self) -> float | int:
         return self.__right
-    
+
+    def get_len_of_interval(self) -> float:
+        return self.__right - self.__left
+
+    def contains(self, input_value: int | float) -> bool:
+        return self.__left <= input_value and input_value <= self.__right
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Interval):
+            return NotImplemented
+        return self.__left == other.__left and self.__right == other.__right
+
+    def __lt__(self, other) -> bool:
+        if not isinstance(other, Interval):
+            return NotImplemented
+        return (self.__left, self.__right) < (other.__left, other.__right)
+
+    def __le__(self, other) -> bool:
+        if not isinstance(other, Interval):
+            return NotImplemented
+        return (self.__left, self.__right) <= (other.__left, other.__right)
+
+    def __gt__(self, other) -> bool:
+        if not isinstance(other, Interval):
+            return NotImplemented
+        return (self.__left, self.__right) > (other.__left, other.__right)
+
+    def __ge__(self, other) -> bool:
+        if not isinstance(other, Interval):
+            return NotImplemented
+        return (self.__left, self.__right) >= (other.__left, other.__right)
+
+    def __repr__(self) -> str:
+        return f"Interval({self.__left}, {self.__right})"
+
+    def __str__(self) -> str:
+        return f"[{self.__left}, {self.__right}]"
