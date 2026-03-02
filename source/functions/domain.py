@@ -1,10 +1,10 @@
-from typing import Callable, Sequence
+from typing import Callable, Sequence, Optional, Union, List
 
 from source.functions.interval import Interval
 
 
 class Domain:
-    def __init__(self, input_intervals: Interval | Sequence[Interval], input_predicate: Callable[[float], bool] | None = None):
+    def __init__(self, input_intervals: Union[Interval, Sequence[Interval]], input_predicate: Optional[Callable[[float], bool]] = None):
         if isinstance(input_intervals, Interval):
             intervals: list[Interval] = [input_intervals]
         else:
@@ -15,14 +15,14 @@ class Domain:
         self._predicate = input_predicate
         self._intervals = intervals
 
-    def get_intervals(self) -> list[Interval] | Interval:
+    def get_intervals(self) -> Union[List[Interval], Interval]:
         return self._intervals[0] if self._is_continuous else self._intervals
     
     @property
-    def intervals(self) -> list[Interval]:
+    def intervals(self) -> List[Interval]:
         return self._intervals
     
-    def contains(self, input_value: float | int) -> bool:
+    def contains(self, input_value: Union[float, int]) -> bool:
         predicate = self._predicate
         if predicate is not None and not predicate(input_value):
             return False

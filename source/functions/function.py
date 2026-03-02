@@ -1,4 +1,4 @@
-from typing import Callable, Optional, Sequence
+from typing import Callable, Optional, Sequence, Union, List
 
 from source.functions.domain import Domain
 from source.functions.range import Range
@@ -23,7 +23,7 @@ class Function:
     def name(self) -> str:
         return self._name
 
-    def __call__(self, input_values: float | Sequence[float]) -> float | list[float]:
+    def __call__(self, input_values: Union[float, Sequence[float]]) -> Union[float, List[float]]:
         if isinstance(input_values, (list, tuple)):
             return [self._evaluate_single(current_input_value) for current_input_value in input_values]
         return self._evaluate_single(input_values)

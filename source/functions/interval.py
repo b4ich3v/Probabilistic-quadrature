@@ -1,5 +1,8 @@
+from typing import Union
+
+
 class Interval:
-    def __init__(self, left_component: float | int, right_component: float | int) -> None:
+    def __init__(self, left_component: Union[float, int], right_component: Union[float, int]) -> None:
         if left_component > right_component:
             raise RuntimeError("Right component must be greater than left")
         if not isinstance(left_component, (int, float)) or not isinstance(right_component, (int, float)):
@@ -13,10 +16,10 @@ class Interval:
     def _set_right_component(self, right) -> None:
         self._right = right
 
-    def get_left_component(self) -> float | int:
+    def get_left_component(self) -> Union[float, int]:
         return self._left
 
-    def get_right_component(self) -> float | int:
+    def get_right_component(self) -> Union[float, int]:
         return self._right
 
     def get_len_of_interval(self) -> float:
@@ -26,10 +29,10 @@ class Interval:
     def width(self) -> float:
         return self._right - self._left
 
-    def contains(self, input_value: int | float) -> bool:
+    def contains(self, input_value: Union[int, float]) -> bool:
         return self._left <= input_value and input_value <= self._right
 
-    def __contains__(self, input_value: int | float) -> bool:
+    def __contains__(self, input_value: Union[int, float]) -> bool:
         return self.contains(input_value)
 
     def __eq__(self, other) -> bool:

@@ -1,5 +1,5 @@
 import numpy as np
-from typing import Callable
+from typing import Callable, Optional
 
 from source.functions.domain import Domain
 from source.functions.interval import Interval
@@ -8,7 +8,7 @@ from source.measures.uniform_box_measure import UniformBoxMeasure
 
 
 class MeasuredFunction(Function):
-    def __init__(self, input_function: Callable[[np.ndarray], np.ndarray], measure, true_integral: float | None = None, input_name: str = "f") -> None:
+    def __init__(self, input_function: Callable[[np.ndarray], np.ndarray], measure, true_integral: Optional[float] = None, input_name: str = "f") -> None:
         super().__init__(input_function, Domain(Interval(float("-inf"), float("inf"))), None, input_name)
         self._measure = measure
         self._true_integral = true_integral
@@ -18,7 +18,7 @@ class MeasuredFunction(Function):
         return self._measure
 
     @property
-    def true_integral(self) -> float | None:
+    def true_integral(self) -> Optional[float]:
         return self._true_integral
 
     def __call__(self, X):
