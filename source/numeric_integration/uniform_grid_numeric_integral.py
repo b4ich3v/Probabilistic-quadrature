@@ -1,6 +1,6 @@
 from source.numeric_integration.numeric_integral import NumericIntegral
-from source.data_structures.interval import Interval
-from source.data_structures.function import Function
+from source.functions.interval import Interval
+from source.functions.function import Function
 
 
 class UniformGridNumericIntegral(NumericIntegral):

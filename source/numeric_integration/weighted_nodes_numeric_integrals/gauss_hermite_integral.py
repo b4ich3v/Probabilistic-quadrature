@@ -1,7 +1,7 @@
 import numpy as np
 
-from source.data_structures.interval import Interval
-from source.data_structures.function import Function
+from source.functions.interval import Interval
+from source.functions.function import Function
 from source.numeric_integration.weighted_nodes_numeric_integral import WeightedNodesNumericIntegral
 
 
