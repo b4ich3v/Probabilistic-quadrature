@@ -1,4 +1,5 @@
 import numpy as np
+from typing import Optional
 
 from source.random_variables.random_variable import RandomVariable
 
@@ -26,7 +27,7 @@ class ContinuousUniformBox(RandomVariable):
     def upper(self) -> np.ndarray:
         return self._upper
 
-    def sample(self, n: int = 1, rng: np.random.Generator | None = None) -> np.ndarray:
+    def sample(self, n: int = 1, rng: Optional[np.random.Generator] = None) -> np.ndarray:
         rng = rng or np.random.default_rng()
         u = rng.random((n, self.dim))
         return self._lower + u * (self._upper - self._lower)
@@ -50,4 +51,3 @@ class ContinuousUniformBox(RandomVariable):
 
     def __repr__(self) -> str:
         return f"ContinuousUniformBox(lower={self._lower!r}, upper={self._upper!r})"
-

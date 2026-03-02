@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Optional
 import numpy as np
 
 
@@ -9,7 +10,7 @@ class RandomVariable(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def sample(self, n: int = 1, rng: np.random.Generator | None = None) -> np.ndarray:
+    def sample(self, n: int = 1, rng: Optional[np.random.Generator] = None) -> np.ndarray:
         raise NotImplementedError
 
     @abstractmethod

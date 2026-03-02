@@ -1,4 +1,5 @@
 import numpy as np
+from typing import Optional
 
 from source.random_variables.random_variable import RandomVariable
 
@@ -15,7 +16,7 @@ class DiscreteUniform(RandomVariable):
     def dim(self) -> int:
         return 1
 
-    def sample(self, n: int = 1, rng: np.random.Generator | None = None) -> np.ndarray:
+    def sample(self, n: int = 1, rng: Optional[np.random.Generator] = None) -> np.ndarray:
         rng = rng or np.random.default_rng()
         return rng.integers(self._low, self._high + 1, size=(n, 1))
 

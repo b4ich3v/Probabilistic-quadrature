@@ -1,10 +1,11 @@
 import numpy as np
+from typing import Optional, Union
 
 from source.random_variables.random_variable import RandomVariable
 
 
 class Normal(RandomVariable):
-    def __init__(self, mean: float | np.ndarray, std: float | np.ndarray):
+    def __init__(self, mean: Union[float, np.ndarray], std: Union[float, np.ndarray]):
         mu = np.atleast_1d(mean).astype(float)
         std_arr = np.atleast_1d(std).astype(float)
         if std_arr.shape not in [(1,), mu.shape]:
@@ -20,7 +21,7 @@ class Normal(RandomVariable):
     def dim(self) -> int:
         return self._mean.shape[0]
 
-    def sample(self, n: int = 1, rng: np.random.Generator | None = None) -> np.ndarray:
+    def sample(self, n: int = 1, rng: Optional[np.random.Generator] = None) -> np.ndarray:
         rng = rng or np.random.default_rng()
         return rng.normal(loc=self._mean, scale=self._std, size=(n, self.dim))
 
