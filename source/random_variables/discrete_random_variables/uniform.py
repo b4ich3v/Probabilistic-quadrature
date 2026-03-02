@@ -3,7 +3,7 @@ import numpy as np
 from source.random_variables.random_variable import RandomVariable
 
 
-class Uniform(RandomVariable):
+class DiscreteUniform(RandomVariable):
     def __init__(self, low: int, high: int):
         if high < low:
             raise ValueError("high must be >= low")
