@@ -1,7 +1,7 @@
 from typing import Optional
 
 from source.numeric_integration.numeric_integration_pattern import NumericIntegrationPattern
-from source.numeric_integration.monte_carlo.monte_carlo_factory.monte_carlo_factory import MonteCarloAbstractFactory
+from source.numeric_integration.monte_carlo.monte_carlo_factory.monte_carlo_factory import MonteCarloFactory
 from source.numeric_integration.monte_carlo.monte_carlo_stretegies import MonteCarloIntegrationStrategy
 from source.numeric_integration.numeric_integral import NumericIntegral
 from source.numeric_integration.uniform_grid_numeric_integrals.rectangle_numeric_integral import RectangleNumericIntegral
@@ -19,7 +19,7 @@ class NumericIntegralFactory(NumericIntegralAbstractFactory):
         if creation_pattern == NumericIntegrationPattern.RECTANGLE: return RectangleNumericIntegral(*args, **kwargs)
         if creation_pattern == NumericIntegrationPattern.TRAPEZOID: return TrapezoidNumericIntegral(*args, **kwargs)
         if creation_pattern == NumericIntegrationPattern.SIMPSON: return SimpsonNumericIntegral(*args, **kwargs)
-        if creation_pattern == NumericIntegrationPattern.MONTE_CARLO: return MonteCarloAbstractFactory().create(monte_carlo_pattern)
+        if creation_pattern == NumericIntegrationPattern.MONTE_CARLO: return MonteCarloFactory().create(monte_carlo_pattern, *args, **kwargs)
         if creation_pattern == NumericIntegrationPattern.LEGENDRE: return GaussLegendreIntegral(*args, **kwargs)
         if creation_pattern == NumericIntegrationPattern.HERMITE: return GaussHermiteIntegral(*args, **kwargs)
         if creation_pattern == NumericIntegrationPattern.LAGUERRE: return GaussLaguerreIntegral(*args, **kwargs)
