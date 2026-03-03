@@ -1,5 +1,5 @@
 import numpy as np
-from typing import Optional, Union
+from typing import Union
 
 from source.random_variables.random_variable import RandomVariable
 
@@ -21,7 +21,7 @@ class Normal(RandomVariable):
     def dim(self) -> int:
         return self._mean.shape[0]
 
-    def sample(self, n: int = 1, rng: Optional[np.random.Generator] = None) -> np.ndarray:
+    def sample(self, n: int = 1, rng=None) -> np.ndarray:
         rng = rng or np.random.default_rng()
         return rng.normal(loc=self._mean, scale=self._std, size=(n, self.dim))
 

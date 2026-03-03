@@ -1,5 +1,4 @@
 import numpy as np
-from typing import Optional
 
 from source.random_variables.random_variable import RandomVariable
 
@@ -15,7 +14,7 @@ class Uniform(RandomVariable):
     def dim(self) -> int:
         return 1
 
-    def sample(self, n: int = 1, rng: Optional[np.random.Generator] = None) -> np.ndarray:
+    def sample(self, n: int = 1, rng=None) -> np.ndarray:
         rng = rng or np.random.default_rng()
         u = rng.random((n, 1))
         return self._low + u * (self._high - self._low)
