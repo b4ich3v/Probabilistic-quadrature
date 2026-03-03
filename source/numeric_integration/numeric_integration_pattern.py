@@ -10,3 +10,4 @@ class NumericIntegrationPattern(Enum):
     HERMITE = 5
     LAGUERRE = 6
     CHEBYSHEV = 7
+    BAYESIAN = 8
