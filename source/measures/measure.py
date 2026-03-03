@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 import numpy as np
+from source.random_variables.random_variable import RandomVariable
 
 
 class Measure(ABC):
@@ -10,5 +11,5 @@ class Measure(ABC):
         raise RuntimeError("Not implemented yet")
 
     @abstractmethod
-    def sample(self, n: int, rng: Optional[np.random.Generator] = None) -> np.ndarray:
+    def sample(self, n: int, rv: Optional[RandomVariable] = None) -> np.ndarray:
         raise RuntimeError("Not implemented yet")
