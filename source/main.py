@@ -1,5 +1,6 @@
 import numpy as np
 
+from source.random_variables.continuous_random_variables.uniform import Uniform
 from source.numeric_integration.numeric_integral_factory.numeric_integral_factory import NumericIntegralFactory
 from source.numeric_integration.numeric_integration_pattern import NumericIntegrationPattern
 from source.numeric_integration.monte_carlo.monte_carlo_stretegies import MonteCarloIntegrationStrategy
@@ -30,7 +31,8 @@ def test1():
 
 def test2():
     input_function = MeasuredFunction(function_predicate, measure, true_integral = 1 / 3)
-    proposal = lambda n, rng: rng.random((n, 1))
+    proposal_rv = Uniform(0.0, 1.0)
+    proposal = lambda n, rng: proposal_rv.sample(n, rng)
     weight_fn = lambda x: np.ones(x.shape[0])
 
     integral_w = factory.create(
