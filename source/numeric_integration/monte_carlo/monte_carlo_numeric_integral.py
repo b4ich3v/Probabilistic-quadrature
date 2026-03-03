@@ -1,17 +1,18 @@
-import numpy as np
 from typing import Optional
 
 from source.functions.interval import Interval
 from source.measures.measure import Measure
 from source.numeric_integration.numeric_integral import NumericIntegral
+from source.random_variables.continuous_random_variables.uniform import Uniform
+from source.random_variables.random_variable import RandomVariable
 
 
 class MonteCarloNumericIntegral(NumericIntegral):
-    def __init__(self, input_function, measure: Measure, n_samples: int, rng: Optional[np.random.Generator] = None) -> None:
+    def __init__(self, input_function, measure: Measure, n_samples: int, rv: Optional[RandomVariable] = None, rng=None) -> None:
         super().__init__(input_function, Interval(0.0, 1.0), [0.0, 1.0], 1, validate=False)
         self._measure = measure
         self._n_samples = n_samples
-        self._rng = rng or np.random.default_rng()
+        self._rv = rv or Uniform(0.0, 1.0)
         self._stderr: Optional[float] = None
 
     @property
