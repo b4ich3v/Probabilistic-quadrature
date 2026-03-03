@@ -1,8 +1,8 @@
 import numpy as np
-from typing import Optional
 
 from source.measures.measure import Measure
 from source.random_variables.continuous_random_variables.normal import Normal
+from source.random_variables.random_variable import RandomVariable
 
 
 class GaussianMeasure(Measure):
@@ -32,8 +32,9 @@ class GaussianMeasure(Measure):
     def dim(self) -> int:
         return self.mean.shape[0]
 
-    def sample(self, n: int, rng: Optional[np.random.Generator] = None) -> np.ndarray:
-        rng = rng or np.random.default_rng()
+    def sample(self, n: int, rv: RandomVariable | None = None) -> np.ndarray:
+        if rv is not None:
+            return rv.sample(n)
         if self._full_cov is not None:
-            return rng.multivariate_normal(self.mean, self.cov, size=n)
-        return self._rv_diag.sample(n, rng)
+            return np.random.default_rng().multivariate_normal(self.mean, self.cov, size=n)
+        return self._rv_diag.sample(n)
