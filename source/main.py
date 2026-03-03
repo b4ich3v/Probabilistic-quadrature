@@ -23,7 +23,7 @@ def test1():
     integral_1 = factory.create(
         NumericIntegrationPattern.MONTE_CARLO,
         MonteCarloIntegrationStrategy.STANDARD,
-        input_function, measure, n_samples=20000, rng=np.random.default_rng(0)
+        input_function, measure, n_samples=20000, rv=Uniform(0.0, 1.0)
     )
 
     print("MC standard:", integral_1.integrate())
@@ -32,13 +32,13 @@ def test1():
 def test2():
     input_function = MeasuredFunction(function_predicate, measure, true_integral = 1 / 3)
     proposal_rv = Uniform(0.0, 1.0)
-    proposal = lambda n, rng: proposal_rv.sample(n, rng)
+    proposal = lambda n, rv: proposal_rv.sample(n)
     weight_fn = lambda x: np.ones(x.shape[0])
 
     integral_w = factory.create(
         NumericIntegrationPattern.MONTE_CARLO,
         MonteCarloIntegrationStrategy.WEIGHTED,
-        input_function, measure, n_samples=20000, rng=np.random.default_rng(0), proposal_sampler=proposal, weight_fn=weight_fn
+        input_function, measure, n_samples=20000, rv=Uniform(0.0, 1.0), proposal_sampler=proposal, weight_fn=weight_fn
     )
 
     print("MC weighted:", integral_w.integrate())
@@ -48,7 +48,7 @@ def test3():
     integral_r = factory.create(
         NumericIntegrationPattern.MONTE_CARLO,
         MonteCarloIntegrationStrategy.RECURSIVE,
-        input_function, measure, n_samples=20000, rng=np.random.default_rng(0), depth=5
+        input_function, measure, n_samples=20000, rv=Uniform(0.0, 1.0), depth=5
     )
 
     print("MC recursive:", integral_r.integrate())
