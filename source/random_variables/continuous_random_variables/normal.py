@@ -22,8 +22,9 @@ class Normal(RandomVariable):
         return self._mean.shape[0]
 
     def sample(self, n: int = 1, rng=None) -> np.ndarray:
-        rng = rng or np.random.default_rng()
-        return rng.normal(loc=self._mean, scale=self._std, size=(n, self.dim))
+        if hasattr(rng, "normal"):
+            return rng.normal(loc=self._mean, scale=self._std, size=(n, self.dim))
+        return np.random.default_rng().normal(loc=self._mean, scale=self._std, size=(n, self.dim))
 
     def log_prob(self, x: np.ndarray) -> np.ndarray:
         x = np.atleast_2d(x).astype(float)

@@ -27,8 +27,12 @@ class ContinuousUniformBox(RandomVariable):
         return self._upper
 
     def sample(self, n: int = 1, rng=None) -> np.ndarray:
-        rng = rng or np.random.default_rng()
-        u = rng.random((n, self.dim))
+        if hasattr(rng, "random"):
+            u = rng.random((n, self.dim))
+        elif rng is None:
+            u = np.random.default_rng().random((n, self.dim))
+        else:
+            u = np.random.default_rng().random((n, self.dim))
         return self._lower + u * (self._upper - self._lower)
 
     def log_prob(self, x: np.ndarray) -> np.ndarray:

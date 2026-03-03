@@ -15,8 +15,12 @@ class Uniform(RandomVariable):
         return 1
 
     def sample(self, n: int = 1, rng=None) -> np.ndarray:
-        rng = rng or np.random.default_rng()
-        u = rng.random((n, 1))
+        if hasattr(rng, "random"):
+            u = rng.random((n, 1))
+        elif rng is None:
+            u = np.random.default_rng().random((n, 1))
+        else:
+            u = np.random.default_rng().random((n, 1))
         return self._low + u * (self._high - self._low)
 
     def log_prob(self, x: np.ndarray) -> np.ndarray:
