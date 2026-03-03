@@ -12,6 +12,7 @@ from source.numeric_integration.weighted_nodes_numeric_integrals.gauss_hermite_i
 from source.numeric_integration.weighted_nodes_numeric_integrals.gauss_laguerre_integral import GaussLaguerreIntegral
 from source.numeric_integration.weighted_nodes_numeric_integrals.gauss_chebyshev_integral import GaussChebyshevIntegral
 from source.numeric_integration.numeric_integral_factory.numeric_integral_abstract_factory import NumericIntegralAbstractFactory
+from source.numeric_integration.bayesian_integral.bayesian_quadrature_integral import BayesianQuadratureIntegral
 
 
 class NumericIntegralFactory(NumericIntegralAbstractFactory):
@@ -24,4 +25,5 @@ class NumericIntegralFactory(NumericIntegralAbstractFactory):
         if creation_pattern == NumericIntegrationPattern.HERMITE: return GaussHermiteIntegral(*args, **kwargs)
         if creation_pattern == NumericIntegrationPattern.LAGUERRE: return GaussLaguerreIntegral(*args, **kwargs)
         if creation_pattern == NumericIntegrationPattern.CHEBYSHEV: return GaussChebyshevIntegral(*args, **kwargs)
+        if creation_pattern == NumericIntegrationPattern.BAYESIAN: return BayesianQuadratureIntegral(*args, **kwargs)
         raise ValueError(f"Unsupported integration pattern: {creation_pattern}")
