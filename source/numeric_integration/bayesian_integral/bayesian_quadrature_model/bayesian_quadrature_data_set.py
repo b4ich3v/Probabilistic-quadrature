@@ -13,14 +13,14 @@ class BQDataset:
     @classmethod
     def from_arrays(cls, X: ArrayLike, y: ArrayLike) -> "BQDataset":
         X2 = ensure_2d(X)
-        y_arr = np.asarray(y, dtype=float).squeeze()
+        y_arr = np.asarray(y, dtype=float).reshape(-1)
         if y_arr.shape[0] != X2.shape[0]:
             raise ValueError("X and y must have same first dimension")
         return cls(X2, y_arr)
 
     def append(self, X_new: ArrayLike, y_new: ArrayLike) -> "BQDataset":
         Xn = ensure_2d(X_new)
-        yn = np.asarray(y_new, dtype=float).squeeze()
+        yn = np.asarray(y_new, dtype=float).reshape(-1)
         if yn.shape[0] != Xn.shape[0]:
             raise ValueError("X_new and y_new must have same first dimension")
         X_all = np.vstack([self.X, Xn])
