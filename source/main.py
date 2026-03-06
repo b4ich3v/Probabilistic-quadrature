@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 from source.random_variables.continuous_random_variables.uniform import Uniform
 from source.numeric_integration.numeric_integral_factory.numeric_integral_factory import NumericIntegralFactory
@@ -9,6 +10,7 @@ from source.functions.measured_function import MeasuredFunction
 from source.functions.interval import Interval
 from source.functions.domain import Domain
 from source.functions.function import Function
+from source.functions.derivatives.central_difference_derivative_estimator import CentralDifferenceDerivativeEstimator
 
 
 # Integration method factory
@@ -107,7 +109,14 @@ def test_gaussian_quadratures(n: int = 8):
     run_and_report("Gauss-Chebyshev", chebyshev_integration_method.integrate(), np.pi)
 
 
+def test_derivative():
+    function = Function(lambda x: x ** 2, Domain(Interval(float("-inf"), float("inf"))), input_name="x^2")
+    central_der = CentralDifferenceDerivativeEstimator(function, 0.0001)
+    central_der.plot_at(2, Interval(-50, 50))
+
+
 if __name__ == "__main__":
     test_monte_carlo()
     test_uniform_grid_rules()
     test_gaussian_quadratures()
+    test_derivative()
