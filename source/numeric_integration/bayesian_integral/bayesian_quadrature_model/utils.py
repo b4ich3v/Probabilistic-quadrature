@@ -63,7 +63,8 @@ def kernel_integral_variance(kernel, measure, mc_samples: int = 4096, rng=None) 
     np.fill_diagonal(K, 0.0)
     n = samples.shape[0]
     with np.errstate(over="ignore", under="ignore", divide="ignore", invalid="ignore"):
-        return float(K.sum() / (n * (n - 1)))
+        est = float(K.sum() / (n * (n - 1)))
+        return max(est, 0.0)
 
 
 def gp_posterior_predictive(X_train: ArrayLike, y_train: ArrayLike, X_test: ArrayLike, kernel, noise: float = 0.0, K_inv: Optional[np.ndarray] = None):
