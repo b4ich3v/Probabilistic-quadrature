@@ -1,16 +1,18 @@
 import numpy as np
-import matplotlib.pyplot as plt
 
 from source.random_variables.continuous_random_variables.uniform import Uniform
 from source.numeric_integration.numeric_integral_factory.numeric_integral_factory import NumericIntegralFactory
 from source.numeric_integration.numeric_integration_pattern import NumericIntegrationPattern
 from source.numeric_integration.monte_carlo.monte_carlo_stretegies import MonteCarloIntegrationStrategy
 from source.measures.uniform_box_measure import UniformBoxMeasure
+from source.kernels.rbf_kernel import RBFKernel
 from source.functions.measured_function import MeasuredFunction
 from source.functions.interval import Interval
 from source.functions.domain import Domain
 from source.functions.function import Function
 from source.functions.derivatives.central_difference_derivative_estimator import CentralDifferenceDerivativeEstimator
+from source.numeric_integration.bayesian_integral.bayesian_quadrature_model.bayesian_quadrature_model import BayesianQuadratureModel
+from source.numeric_integration.bayesian_integral.bayesian_quadrature_model.bayesian_quadrature_config import BQConfig
 
 
 # Integration method factory
@@ -115,8 +117,26 @@ def test_derivative():
     central_der.plot_at(2, Interval(-50, 50))
 
 
+def test_bayesian_quadrature_model(n_points: int = 10, seed: int = 0):
+    measure = UniformBoxMeasure(np.array([0.0]), np.array([1.0]))
+    true_val = 1.0 / 3.0
+    rng = np.random.default_rng(seed)
+    X = rng.random((n_points, 1))
+    y = function_predicate(X)
+
+    kernel = RBFKernel(lengthscale=0.2, variance=1.0)
+    cfg = BQConfig(noise=0.0)
+    bq = BayesianQuadratureModel(kernel, measure, config=cfg)
+    bq.fit(X, y)
+    mean, var = bq.integral_posterior()
+
+    print(f"Bayesian Quadrature        estimate={mean:.6f}  stderr~={np.sqrt(var):.2e}")
+    print(f"(true value = {true_val:.6f})")
+
+
 if __name__ == "__main__":
     test_monte_carlo()
     test_uniform_grid_rules()
     test_gaussian_quadratures()
     test_derivative()
+    test_bayesian_quadrature_model()
