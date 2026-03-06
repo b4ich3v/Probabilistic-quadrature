@@ -1,5 +1,6 @@
 from abc import abstractmethod
 from abc import ABC
+import numpy as np
 
 from source.functions.interval import Interval
 from source.functions.function import Function
@@ -27,12 +28,13 @@ class NumericIntegral(ABC):
 
         left = self._interval.get_left_component()
         right = self._interval.get_right_component()
-        if nodes[0] != left or nodes[-1] != right:
+        if not np.isclose(nodes[0], left) or not np.isclose(nodes[-1], right):
             raise RuntimeError("Nodes must start/end at the interval boundaries")
 
         expected_step = (right - left) / sub_intervals
         for i in range(1, len(nodes)):
-            if nodes[i] - nodes[i - 1] != expected_step:
+            step = nodes[i] - nodes[i - 1]
+            if not np.isclose(step, expected_step):
                 raise RuntimeError("Nodes must be uniformly spaced across the interval")
 
     @abstractmethod
