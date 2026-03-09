@@ -21,3 +21,6 @@ class InterpolationPoly(ABC):
     @abstractmethod
     def evaluate(self, x: float) -> float:
         raise NotImplementedError
+    
+    def __call__(self, x: float) -> float:
+        return self.evaluate(x)
