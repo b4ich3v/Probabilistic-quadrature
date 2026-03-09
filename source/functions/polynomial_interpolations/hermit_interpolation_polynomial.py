@@ -11,6 +11,10 @@ class HermitInterpolationPoly(InterpolationPoly):
         self._derivatives = [derivative_estimator.calculate_derivative_at(x) for x in self._nodes]
         self._z, self._coefficients = self._build_coefficients()
 
+    @property
+    def degree(self) -> int:
+        return 2 * len(self._nodes) - 1
+
     def _build_coefficients(self) -> tuple[list[float], list[float]]:
         n = len(self._nodes)
         m = 2 * n
