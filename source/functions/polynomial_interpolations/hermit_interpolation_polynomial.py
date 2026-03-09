@@ -40,7 +40,6 @@ class HermitInterpolationPoly(InterpolationPoly):
     def evaluate(self, x: float) -> float:
         if not self._coefficients:
             return 0.0
-
         result = self._coefficients[-1]
         for i in range(len(self._coefficients) - 2, -1, -1):
             result = self._coefficients[i] + (x - self._z[i]) * result
