@@ -20,4 +20,4 @@ class InterpolationPoly(ABC):
 
     @abstractmethod
     def evaluate(self, x: float) -> float:
-        pass
+        raise NotImplementedError
