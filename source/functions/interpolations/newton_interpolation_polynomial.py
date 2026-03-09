@@ -5,11 +5,13 @@ class NewtonInterpolationPoly(InterpolationPoly):
     def __init__(self, nodes: list[float], values: list[float]) -> None:
         super().__init__(nodes, values)
 
-    def _diff(self, nodes, values):
-        if len(nodes) == 1:
-            return values[0]
+    def _diff(self):
+        if len(self._nodes) == 1:
+            return self._values[0]
         else:
-            return (self._diff(nodes[1:], values[1:]) - self._diff(nodes[:-1], values[:-1])) / (nodes[-1] - nodes[0])
+            return (self._diff(self._nodes[1:], self._values[1:]) - 
+                    self._diff(self._nodes[:-1], self._values[:-1])) / (
+                    self._nodes[-1] - self._nodes[0])
 
     def evaluate(self, x: float) -> float:
             result = 0
