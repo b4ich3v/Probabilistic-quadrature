@@ -2,7 +2,7 @@ from source.functions.interpolations.interpolation_polynomial import Interpolati
 
 
 class LagrangeInterpolationPoly(InterpolationPoly):
-    def __init__(self, nodes: list[float], values: list[float]):
+    def __init__(self, nodes: list[float], values: list[float]) -> None:
         super().__init__(nodes, values)
 
     def evaluate(self, x: float) -> float:

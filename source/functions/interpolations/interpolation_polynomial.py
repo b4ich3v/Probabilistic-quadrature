@@ -3,7 +3,7 @@ from abc import abstractmethod
 
 
 class InterpolationPoly(ABC):
-    def __init__(self, nodes: list[float], values: list[float]):
+    def __init__(self, nodes: list[float], values: list[float]) -> None:
         if len(nodes) != len(values):
             raise ValueError("nodes and values must be with equal size")
         if len(set(nodes)) != len(nodes):
