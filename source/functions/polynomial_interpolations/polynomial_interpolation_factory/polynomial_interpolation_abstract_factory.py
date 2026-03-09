@@ -7,5 +7,5 @@ from source.functions.polynomial_interpolations.interpolation_pattern import Int
 
 class PolyInterpolationAbstractFactory(ABC):
     @abstractmethod
-    def create(self, creation_pattern: InterpolationPattern, nodes: list[float], values: list[float]) -> InterpolationPoly:
+    def create(self, creation_pattern: InterpolationPattern, nodes: list[float], values: list[float], *args) -> InterpolationPoly:
         raise RuntimeError("Not implemented yet")

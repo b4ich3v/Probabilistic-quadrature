@@ -1,23 +1,43 @@
-import math
-
+from source.functions.derivatives.derivative_estimator import DerivativeEstimator
 from source.functions.polynomial_interpolations.interpolation_polynomial import InterpolationPoly
 
 
 class HermitInterpolationPoly(InterpolationPoly):
-    def __init__(self, nodes: list[float], values: list[float]) -> None:
+    def __init__(self, nodes: list[float], values: list[float], derivative_estimator: DerivativeEstimator) -> None:
         super().__init__(nodes, values)
+        if derivative_estimator is None:
+            raise ValueError("derivative_estimator is required for Hermite interpolation")
 
-    def _diff(self, left: int, right: int):
-        if self._nodes[left] == self._nodes[right]: 
-            return self._values[left] / math.factorial(right - left)
-        return (self._diff(self._nodes, self._values, left + 1, right) - 
-                self._diff(self._nodes, self._values, left, right - 1)) / (
-                self._nodes[right] - self._nodes[left])
+        self._derivatives = [derivative_estimator.calculate_derivative_at(x) for x in self._nodes]
+        self._z, self._coefficients = self._build_coefficients()
+
+    def _build_coefficients(self) -> tuple[list[float], list[float]]:
+        n = len(self._nodes)
+        m = 2 * n
+        z = [0.0] * m
+        q = [[0.0 for _ in range(m)] for _ in range(m)]
+
+        for idx, x in enumerate(self._nodes):
+            z[2 * idx] = z[2 * idx + 1] = x
+            q[2 * idx][0] = q[2 * idx + 1][0] = self._values[idx]
+
+        for j in range(1, m):
+            for i in range(m - j):
+                if j == 1 and z[i] == z[i + 1]:
+                    q[i][j] = self._derivatives[i // 2]
+                else:
+                    numerator = q[i + 1][j - 1] - q[i][j - 1]
+                    denominator = z[i + j] - z[i]
+                    q[i][j] = numerator / denominator
+
+        coefficients = [q[0][j] for j in range(m)]
+        return z, coefficients
 
     def evaluate(self, x: float) -> float:
-        result = 0
-        product = 1
-        for i in range(len(self._values)):
-            result += self._diff(self._nodes, self._values, 0, i) * product
-            product *= (x - self._nodes[i])
+        if not self._coefficients:
+            return 0.0
+
+        result = self._coefficients[-1]
+        for i in range(len(self._coefficients) - 2, -1, -1):
+            result = self._coefficients[i] + (x - self._z[i]) * result
         return result
