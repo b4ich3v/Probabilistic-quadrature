@@ -1,4 +1,4 @@
-from source.functions.interpolations.interpolation_polynomial import InterpolationPoly
+from source.functions.polynomial_interpolations.interpolation_polynomial import InterpolationPoly
 
 
 class LagrangeInterpolationPoly(InterpolationPoly):
