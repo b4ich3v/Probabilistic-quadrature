@@ -3,7 +3,6 @@ from typing import Optional
 from source.functions.interval import Interval
 from source.measures.measure import Measure
 from source.numeric_integration.numeric_integral import NumericIntegral
-from source.random_variables.continuous_random_variables.uniform import Uniform
 from source.random_variables.random_variable import RandomVariable
 
 
@@ -14,7 +13,7 @@ class MonteCarloNumericIntegral(NumericIntegral):
         super().__init__(input_function, Interval(0.0, 1.0), [0.0, 1.0], 1, validate=False)
         self._measure = measure
         self._n_samples = n_samples
-        self._rv = rv or Uniform(0.0, 1.0)
+        self._rv = rv
         self._stderr: Optional[float] = None
 
     @property
