@@ -15,8 +15,13 @@ class Domain:
         self._predicate = input_predicate
         self._intervals = intervals
 
-    def get_intervals(self) -> Union[List[Interval], Interval]:
-        return self._intervals[0] if self._is_continuous else self._intervals
+    def get_intervals(self) -> List[Interval]:
+        return list(self._intervals)
+
+    def get_interval(self) -> Interval:
+        if not self._is_continuous:
+            raise RuntimeError("Domain has multiple intervals; use get_intervals()")
+        return self._intervals[0]
     
     @property
     def intervals(self) -> List[Interval]:
