@@ -267,3 +267,7 @@ Implemented in report experiments:
 - https://www.youtube.com/watch?v=T63ATAXn63Y
 - https://store.fmi.uni-sofia.bg/fmi/statist/personal/vandev/lectures/stochproc.pdf
 - https://medium.com/@tinonucera/building-quadratic-approximation-in-bayesian-inference-from-scratch-step-by-step-example-f17167cbe9eb
+- https://gaussianprocess.org/gpml
+- https://www.cs.toronto.edu/~duvenaud/cookbook
+- https://papers.nips.cc/paper/2150-bayesian-monte-carlo
+- https://www.microsoft.com/en-us/research/publication/deriving-quadrature-rules-gaussian-processes
