@@ -29,99 +29,11 @@ Primary usage entry points are notebooks:
 - `source/polynomial_interpolations.ipynb`
 - `source/final_project_report.ipynb`
 
-## 3. Repository Structure
-
-```text
-Probabilistic-quadrature/
-  README.md
-  requirements.txt
-  source/
-    final_project_report.ipynb
-    numeric_intergration.ipynb
-    polynomial_interpolations.ipynb
-
-    functions/
-      interval.py
-      range.py
-      domain.py
-      function.py
-      measured_function.py
-      derivatives/
-        derivative_estimator.py
-        forward_derivative_estimator.py
-        central_difference_derivative_estimator.py
-      polynomial_interpolations/
-        interpolation_pattern.py
-        interpolation_polynomial.py
-        lagrange_interpolation_polynomial.py
-        newton_interpolation_polynomial.py
-        hermit_interpolation_polynomial.py
-        polynomial_interpolation_factory/
-          polynomial_interpolation_abstract_factory.py
-          polynomial_interpolation_factory.py
-
-    random_variables/
-      random_variable.py
-      continuous_random_variables/
-        uniform.py
-        uniform_box.py
-        normal.py
-
-    measures/
-      measure.py
-      uniform_box_measure.py
-      gaussian_measure.py
-
-    kernels/
-      kernel.py
-      rbf_kernel.py
-      matern32_kernel.py
-
-    numeric_integration/
-      numeric_integral.py
-      numeric_integration_pattern.py
-      uniform_grid_numeric_integral.py
-      weighted_nodes_numeric_integral.py
-      numeric_integral_factory/
-        numeric_integral_abstract_factory.py
-        numeric_integral_factory.py
-      uniform_grid_numeric_integrals/
-        rectangle_numeric_integral.py
-        trapezoid_numeric_integral.py
-        simpson_numeric_intergral.py
-      weighted_nodes_numeric_integrals/
-        affine_transformation.py
-        gauss_legendre_integral.py
-        gauss_hermite_integral.py
-        gauss_laguerre_integral.py
-        gauss_chebyshev_integral.py
-      monte_carlo/
-        monte_carlo_stretegies.py
-        monte_carlo_numeric_integral.py
-        standard_monte_carlo_integral.py
-        weighted_monte_carlo_integral.py
-        recursive_monte_carlo_integral.py
-        monte_carlo_factory/
-          monte_carlo_abstract_factory.py
-          monte_carlo_factory.py
-      bayesian_integral/
-        bayesian_quadrature_integral.py
-        gaussian_process.py
-        active_bayesian_quadrature.py
-        bayesian_quadrature_model/
-          bayesian_quadrature_config.py
-          bayesian_quadrature_data_set.py
-          bayesian_quadrature_integral_terms.py
-          bayesian_quadrature_posterior_cache.py
-          bayesian_quadrature_model.py
-          utils.py
-```
-
-## 4. Full Abstraction Catalog (all classes/enums/dataclasses)
+## 3. Full Abstraction Catalog (all classes/enums/dataclasses)
 
 This section documents every class and enum currently present in `source/**/*.py`.
 
-### 4.1 Core Math Layer (`source/functions`)
+### 3.1 Core Math Layer (`source/functions`)
 
 - `Interval` (file: `interval.py`; base: `-`): Closed interval `[left, right]`, ordering/comparison helpers, membership check, width.
 - `Range` (file: `range.py`; base: `-`): Output range object for codomain validation and clamping.
@@ -129,13 +41,13 @@ This section documents every class and enum currently present in `source/**/*.py
 - `Function` (file: `function.py`; base: `-`): Callable wrapper with domain/codomain checks and metadata (`name`).
 - `MeasuredFunction` (file: `measured_function.py`; base: `Function`): Vectorized function tied to a measure, optional known true integral.
 
-### 4.2 Derivative Layer (`source/functions/derivatives`)
+### 3.2 Derivative Layer (`source/functions/derivatives`)
 
 - `DerivativeEstimator` (file: `derivative_estimator.py`; base: `ABC`): Abstract derivative interface and tangent plot helper.
 - `ForwardDerivativeEstimator` (file: `forward_derivative_estimator.py`; base: `DerivativeEstimator`): Forward finite difference derivative.
 - `CentralDifferenceDerivativeEstimator` (file: `central_difference_derivative_estimator.py`; base: `DerivativeEstimator`): Central finite difference derivative.
 
-### 4.3 Polynomial Interpolation Layer (`source/functions/polynomial_interpolations`)
+### 3.3 Polynomial Interpolation Layer (`source/functions/polynomial_interpolations`)
 
 - `InterpolationPattern` (file: `interpolation_pattern.py`; base: `Enum`): Dispatch enum: `LAGRANGE`, `NEWTON`, `HERMIT`.
 - `InterpolationPoly` (file: `interpolation_polynomial.py`; base: `ABC`): Abstract interpolation polynomial API with node/value validation.
@@ -145,26 +57,26 @@ This section documents every class and enum currently present in `source/**/*.py
 - `PolyInterpolationAbstractFactory` (file: `polynomial_interpolation_factory/polynomial_interpolation_abstract_factory.py`; base: `ABC`): Abstract factory for interpolation objects.
 - `PolynomialInterpolationFactory` (file: `polynomial_interpolation_factory/polynomial_interpolation_factory.py`; base: `PolyInterpolationAbstractFactory`): Concrete interpolation factory.
 
-### 4.4 Random Variable Layer (`source/random_variables`)
+### 3.4 Random Variable Layer (`source/random_variables`)
 
 - `RandomVariable` (file: `random_variable.py`; base: `ABC`): Abstract RV API (`sample`, `log_prob`, `mean`, `var`).
 - `Uniform` (file: `continuous_random_variables/uniform.py`; base: `RandomVariable`): 1D uniform RV.
 - `ContinuousUniformBox` (file: `continuous_random_variables/uniform_box.py`; base: `RandomVariable`): Axis-aligned box uniform RV in R^d.
 - `Normal` (file: `continuous_random_variables/normal.py`; base: `RandomVariable`): Diagonal Gaussian RV in R^d.
 
-### 4.5 Measure Layer (`source/measures`)
+### 3.5 Measure Layer (`source/measures`)
 
 - `Measure` (file: `measure.py`; base: `ABC`): Abstract measure API (`dim`, `sample`).
 - `UniformBoxMeasure` (file: `uniform_box_measure.py`; base: `Measure`): Uniform measure over hyper-rectangle.
 - `GaussianMeasure` (file: `gaussian_measure.py`; base: `Measure`): Gaussian measure with full/diag covariance sampling path.
 
-### 4.6 Kernel Layer (`source/kernels`)
+### 3.6 Kernel Layer (`source/kernels`)
 
 - `Kernel` (file: `kernel.py`; base: `ABC`): Abstract kernel API; includes squared-Euclidean helper.
 - `RBFKernel` (file: `rbf_kernel.py`; base: `Kernel`): RBF kernel with `lengthscale`, `variance`.
 - `Matern32Kernel` (file: `matern32_kernel.py`; base: `Kernel`): Matern 3/2 kernel with `lengthscale`, `variance`.
 
-### 4.7 Integration Core Layer (`source/numeric_integration`)
+### 3.7 Integration Core Layer (`source/numeric_integration`)
 
 - `NumericIntegral` (file: `numeric_integral.py`; base: `ABC`): Base integration abstraction with optional node validation.
 - `NumericIntegrationPattern` (file: `numeric_integration_pattern.py`; base: `Enum`): Integration dispatch enum (`RECTANGLE`, `TRAPEZOID`, `SIMPSON`, `MONTE_CARLO`, `LEGENDRE`, `HERMITE`, `LAGUERRE`, `CHEBYSHEV`, `BAYESIAN`).
@@ -173,13 +85,13 @@ This section documents every class and enum currently present in `source/**/*.py
 - `NumericIntegralAbstractFactory` (file: `numeric_integral_factory/numeric_integral_abstract_factory.py`; base: `ABC`): Abstract factory for integration methods.
 - `NumericIntegralFactory` (file: `numeric_integral_factory/numeric_integral_factory.py`; base: `NumericIntegralAbstractFactory`): Concrete global integration factory.
 
-### 4.8 Uniform Grid Deterministic Rules (`source/numeric_integration/uniform_grid_numeric_integrals`)
+### 3.8 Uniform Grid Deterministic Rules (`source/numeric_integration/uniform_grid_numeric_integrals`)
 
 - `RectangleNumericIntegral` (file: `rectangle_numeric_integral.py`; base: `UniformGridNumericIntegral`): Midpoint rectangle rule.
 - `TrapezoidNumericIntegral` (file: `trapezoid_numeric_integral.py`; base: `UniformGridNumericIntegral`): Trapezoidal rule.
 - `SimpsonNumericIntegral` (file: `simpson_numeric_intergral.py`; base: `UniformGridNumericIntegral`): Simpson rule over each sub-interval.
 
-### 4.9 Weighted-Node Gaussian Rules (`source/numeric_integration/weighted_nodes_numeric_integrals`)
+### 3.9 Weighted-Node Gaussian Rules (`source/numeric_integration/weighted_nodes_numeric_integrals`)
 
 - `AffineTransformation` (file: `affine_transformation.py`; base: `-`): Affine map from `[-1,1]` nodes/weights to target finite interval.
 - `GaussLegendreIntegral` (file: `gauss_legendre_integral.py`; base: `WeightedNodesNumericIntegral`): Legendre Gaussian quadrature.
@@ -187,7 +99,7 @@ This section documents every class and enum currently present in `source/**/*.py
 - `GaussLaguerreIntegral` (file: `gauss_laguerre_integral.py`; base: `WeightedNodesNumericIntegral`): Laguerre Gaussian quadrature.
 - `GaussChebyshevIntegral` (file: `gauss_chebyshev_integral.py`; base: `WeightedNodesNumericIntegral`): Chebyshev Gaussian quadrature.
 
-### 4.10 Monte Carlo Layer (`source/numeric_integration/monte_carlo`)
+### 3.10 Monte Carlo Layer (`source/numeric_integration/monte_carlo`)
 
 - `MonteCarloIntegrationStrategy` (file: `monte_carlo_stretegies.py`; base: `Enum`): MC dispatch enum: `STANDARD`, `WEIGHTED`, `RECURSIVE`.
 - `MonteCarloNumericIntegral` (file: `monte_carlo_numeric_integral.py`; base: `NumericIntegral`): MC base class with sample count and stderr slot.
@@ -197,7 +109,7 @@ This section documents every class and enum currently present in `source/**/*.py
 - `MonteCarloAbstractFactory` (file: `monte_carlo_factory/monte_carlo_abstract_factory.py`; base: `ABC`): Abstract MC factory.
 - `MonteCarloFactory` (file: `monte_carlo_factory/monte_carlo_factory.py`; base: `MonteCarloAbstractFactory`): Concrete MC factory.
 
-### 4.11 Bayesian Quadrature Layer (`source/numeric_integration/bayesian_integral`)
+### 3.11 Bayesian Quadrature Layer (`source/numeric_integration/bayesian_integral`)
 
 - `BayesianQuadratureIntegral` (file: `bayesian_quadrature_integral.py`; base: `NumericIntegral`): Integration wrapper that fits `BayesianQuadratureModel` and returns posterior mean.
 - `GaussianProcess` (file: `gaussian_process.py`; base: `-`): GP training/prediction helper used by BQ model.
@@ -208,7 +120,7 @@ This section documents every class and enum currently present in `source/**/*.py
 - `BQPosteriorState` (file: `bayesian_quadrature_model/bayesian_quadrature_posterior_cache.py`; base: `dataclass`): Cached posterior state (`K_inv`, `mu_f`, `sigma_f2`).
 - `BayesianQuadratureModel` (file: `bayesian_quadrature_model/bayesian_quadrature_model.py`; base: `-`): Main BQ model: fit/update, integral posterior, predictive posterior.
 
-### 4.12 Top-Level Utility Functions
+### 3.12 Top-Level Utility Functions
 
 File: `source/numeric_integration/bayesian_integral/active_bayesian_quadrature.py`
 - `variance_reduction_with_model`: Convenience wrapper around `ActiveBQSelector.variance_reduction`.
@@ -222,9 +134,9 @@ File: `source/numeric_integration/bayesian_integral/bayesian_quadrature_model/ut
 - `kernel_integral_variance`: Generic or closed-form integrated kernel variance calculator.
 - `gp_posterior_predictive`: GP predictive mean/variance helper.
 
-## 5. Inheritance Hierarchies
+## 4. Inheritance Hierarchies
 
-### 5.1 Integration hierarchy
+### 4.1 Integration hierarchy
 
 ```text
 NumericIntegral (ABC)
@@ -247,7 +159,7 @@ NumericIntegral (ABC)
   |- BayesianQuadratureIntegral
 ```
 
-### 5.2 Interpolation hierarchy
+### 4.2 Interpolation hierarchy
 
 ```text
 InterpolationPoly (ABC)
@@ -260,7 +172,7 @@ DerivativeEstimator (ABC)
   |- CentralDifferenceDerivativeEstimator
 ```
 
-### 5.3 Measure, RV, kernel hierarchies
+### 4.3 Measure, RV, kernel hierarchies
 
 ```text
 RandomVariable (ABC)
@@ -277,7 +189,7 @@ Kernel (ABC)
   |- Matern32Kernel
 ```
 
-### 5.4 Factory hierarchy
+### 4.4 Factory hierarchy
 
 ```text
 NumericIntegralAbstractFactory (ABC)
@@ -290,44 +202,44 @@ PolyInterpolationAbstractFactory (ABC)
   |- PolynomialInterpolationFactory
 ```
 
-## 6. Runtime Logic and Data Flow
+## 5. Runtime Logic and Data Flow
 
-### 6.1 Deterministic grid flow
+### 5.1 Deterministic grid flow
 
 1. Build `Function` with `Domain`.
 2. Build node list for interval.
 3. Use `NumericIntegralFactory` with `NumericIntegrationPattern.RECTANGLE/TRAPEZOID/SIMPSON`.
 4. Call `integrate()`.
 
-### 6.2 Gaussian quadrature flow
+### 5.2 Gaussian quadrature flow
 
 1. Build `Function`.
 2. Select rule via `NumericIntegrationPattern.LEGENDRE/HERMITE/LAGUERRE/CHEBYSHEV`.
 3. Rule class obtains nodes/weights from `numpy.polynomial.*`.
 4. Weighted sum is returned by `integrate()`.
 
-### 6.3 Monte Carlo flow
+### 5.3 Monte Carlo flow
 
 1. Build `Measure` and `MeasuredFunction`.
 2. Create MC integrator via `MonteCarloFactory` or `NumericIntegralFactory` with `MONTE_CARLO`.
 3. Sample from measure (optionally with explicit RV/proposal).
 4. Estimate expectation (and stderr for standard/weighted variants).
 
-### 6.4 Bayesian Quadrature flow
+### 5.4 Bayesian Quadrature flow
 
 1. Prepare `X, y` observations of integrand.
 2. Build kernel (`RBFKernel` or `Matern32Kernel`) and measure.
 3. Fit `BayesianQuadratureModel` (`GaussianProcess` + integral terms + cache).
 4. Query `integral_posterior()` for posterior mean and variance.
 
-### 6.5 Active Bayesian Quadrature flow
+### 5.5 Active Bayesian Quadrature flow
 
 1. Start with fitted `BayesianQuadratureModel`.
 2. Build candidate pool.
 3. Use `ActiveBQSelector.greedy_select()` to maximize variance reduction.
 4. Evaluate selected point, update model, repeat.
 
-### 6.6 Interpolation + BQ hybrid logic
+### 5.6 Interpolation + BQ hybrid logic
 
 Implemented in report experiments:
 
@@ -335,7 +247,7 @@ Implemented in report experiments:
 - tune derivative quality for Hermite using `CentralDifferenceDerivativeEstimator`
 - use surrogate as control variate and run BQ on residual
 
-## 7. Notebooks and Their Purpose
+## 6. Notebooks and Their Purpose
 
 - `source/numeric_intergration.ipynb`
   - full comparison across deterministic rules, Gaussian quadrature, MC, BQ
@@ -350,7 +262,7 @@ Implemented in report experiments:
   - theory + reproducible BQ-heavy experiments
   - kernel sensitivity, budget scaling, active sampling, interpolation/derivative-assisted BQ
 
-## 8. References
+## 7. References
 
 - https://www.youtube.com/watch?v=T63ATAXn63Y
 - https://store.fmi.uni-sofia.bg/fmi/statist/personal/vandev/lectures/stochproc.pdf
