@@ -1,27 +1,33 @@
 import numpy as np
 from typing import Callable, Optional
 
-from source.functions.domain import Domain
-from source.functions.interval import Interval
-from source.functions.function import Function
+from source.measures.measure import Measure
 from source.measures.uniform_box_measure import UniformBoxMeasure
 
 
-class MeasuredFunction(Function):
-    def __init__(self, input_function: Callable[[np.ndarray], np.ndarray], measure, true_integral: Optional[float] = None, input_name: str = "f") -> None:
-        super().__init__(input_function, Domain(Interval(float("-inf"), float("inf"))), None, input_name)
+class MeasuredFunction:
+    """A callable tied to a probability measure, used for probabilistic integration."""
+
+    def __init__(self, func: Callable[[np.ndarray], np.ndarray], measure: Measure,
+                 true_integral: Optional[float] = None, name: str = "f") -> None:
+        self._function = func
         self._measure = measure
         self._true_integral = true_integral
+        self._name = name
 
     @property
-    def measure(self):
+    def measure(self) -> Measure:
         return self._measure
 
     @property
     def true_integral(self) -> Optional[float]:
         return self._true_integral
 
-    def __call__(self, X):
+    @property
+    def name(self) -> str:
+        return self._name
+
+    def __call__(self, X: np.ndarray) -> np.ndarray:
         X = np.asarray(X)
         X2 = np.atleast_2d(X)
 
