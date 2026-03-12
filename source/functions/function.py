@@ -1,15 +1,16 @@
-from typing import Callable, Optional, Sequence, Union, List
+from typing import Callable, Optional, Sequence
+import numpy as np
 
 from source.functions.domain import Domain
 from source.functions.range import Range
 
 
 class Function:
-    def __init__(self, input_function: Callable[[float], float], input_domain: Domain, input_codomain: Optional[Range] = None, input_name: str = "f") -> None:
-        self._function = input_function
-        self._domain = input_domain
-        self._range = input_codomain
-        self._name = input_name
+    def __init__(self, func: Callable[[float], float], domain: Domain, codomain: Optional[Range] = None, name: str = "f") -> None:
+        self._function = func
+        self._domain = domain
+        self._range = codomain
+        self._name = name
 
     @property
     def domain(self) -> Domain:
@@ -23,19 +24,21 @@ class Function:
     def name(self) -> str:
         return self._name
 
-    def __call__(self, input_values: Union[float, Sequence[float]]) -> Union[float, List[float]]:
+    def __call__(self, input_values: float | Sequence[float] | np.ndarray) -> float | list[float]:
+        if isinstance(input_values, np.ndarray):
+            return [self._evaluate_single(float(x)) for x in input_values.flat]
         if isinstance(input_values, (list, tuple)):
-            return [self._evaluate_single(current_input_value) for current_input_value in input_values]
+            return [self._evaluate_single(x) for x in input_values]
         return self._evaluate_single(input_values)
 
     def _evaluate_single(self, x: float) -> float:
         if not self._domain.contains(x):
             bounds = ", ".join(
-                f"[{it.get_left_component()}, {it.get_right_component()}]"
-                for it in self._domain.intervals
+                f"[{iv.left}, {iv.right}]"
+                for iv in self._domain.intervals
             )
-            raise RuntimeError(f"Input {x} outside domain {bounds}")
-        function_result = float(self._function(x))
-        if self._range and not self._range.contains(function_result):
-            raise RuntimeError(f"Output {function_result} outside declared range [{self._range.lower}, {self._range.upper}]")
-        return function_result
+            raise ValueError(f"Input {x} outside domain {bounds}")
+        result = float(self._function(x))
+        if self._range and not self._range.contains(result):
+            raise ValueError(f"Output {result} outside declared range [{self._range.lower}, {self._range.upper}]")
+        return result
