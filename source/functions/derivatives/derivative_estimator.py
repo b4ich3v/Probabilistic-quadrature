@@ -1,7 +1,5 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from abc import ABC
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 from source.functions.function import Function
 from source.functions.interval import Interval
@@ -9,23 +7,24 @@ from source.functions.interval import Interval
 
 class DerivativeEstimator(ABC):
     def __init__(self, function: Function, precision: float) -> None:
+        if precision <= 0:
+            raise ValueError("precision must be positive")
         self._function = function
         self._precision = precision
 
     @abstractmethod
-    def calculate_derivative_at(self, point: float) -> float:
-        raise NotImplementedError
-    
-    def plot_at(self, point: float, interval: Interval) -> None:
-        x_coordinates = np.linspace(interval.get_left_component(), interval.get_right_component(), 1000)
-        y_coordinates = []
-        y_derivatvie_coordinats = []
-        derivative_function = lambda x, point: self._function(point) + self.calculate_derivative_at(point) * (x - point)
+    def calculate_derivative_at(self, point: float) -> float: ...
 
-        for i in range(0, len(x_coordinates)):
-            y_coordinates.append(self._function(x_coordinates[i]))
-            y_derivatvie_coordinats.append(derivative_function(x_coordinates[i], point))
-        
-        plt.plot(x_coordinates, y_coordinates)
-        plt.plot(x_coordinates, y_derivatvie_coordinats)
+    def plot_at(self, point: float, interval: Interval) -> None:
+        import matplotlib.pyplot as plt
+
+        x_coords = np.linspace(interval.left, interval.right, 1000)
+        f_at_point = self._function(point)
+        d_at_point = self.calculate_derivative_at(point)
+
+        y_coords = np.array([self._function(x) for x in x_coords])
+        y_tangent = f_at_point + d_at_point * (x_coords - point)
+
+        plt.plot(x_coords, y_coords)
+        plt.plot(x_coords, y_tangent)
         plt.show()
