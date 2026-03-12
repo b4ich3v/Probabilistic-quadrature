@@ -1,9 +1,9 @@
 class Range:
-    def __init__(self, input_lower: float, input_upper: float):
-        if input_lower > input_upper:
-            raise RuntimeError("Range lower bound must not exceed upper bound")
-        self._lower = float(input_lower)
-        self._upper = float(input_upper)
+    def __init__(self, lower: float, upper: float):
+        if lower > upper:
+            raise ValueError("Range lower bound must not exceed upper bound")
+        self._lower = float(lower)
+        self._upper = float(upper)
 
     @property
     def lower(self) -> float:
