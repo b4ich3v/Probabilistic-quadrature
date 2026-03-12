@@ -1,6 +1,7 @@
 import numpy as np
 from numpy.typing import ArrayLike
 from typing import Optional
+from scipy.linalg import cho_factor, cho_solve
 
 from source.kernels.kernel import Kernel
 from source.kernels.rbf_kernel import RBFKernel
@@ -16,49 +17,53 @@ def ensure_2d(X: ArrayLike) -> np.ndarray:
 
 def _gaussian_kernel_mean_rbf(X: np.ndarray, kernel: RBFKernel, measure: GaussianMeasure) -> np.ndarray:
     d = measure.dim
-    ell2 = kernel.lengthscale**2
+    ell2 = kernel.lengthscale ** 2
     cov = measure.cov
     mean = measure.mean
     Sigma = cov + ell2 * np.eye(d)
-    Sigma_inv = np.linalg.inv(Sigma)
-    norm_const = kernel.variance * np.sqrt(
-        np.linalg.det(ell2 * np.eye(d)) / np.linalg.det(Sigma)
-    )
+
+    sign, logdet_Sigma = np.linalg.slogdet(Sigma)
+    _, logdet_ell = np.linalg.slogdet(ell2 * np.eye(d))
+    log_norm = np.log(kernel.variance) + 0.5 * (logdet_ell - logdet_Sigma)
+
+    L_sigma = np.linalg.cholesky(Sigma)
     diff = X - mean
-    exponents = -0.5 * np.einsum("ni,ij,nj->n", diff, Sigma_inv, diff)
-    return norm_const * np.exp(exponents)
+    alpha = np.linalg.solve(L_sigma, diff.T)
+    exponents = -0.5 * np.sum(alpha ** 2, axis=0)
+    return np.exp(log_norm + exponents)
 
 
 def _gaussian_kernel_variance_rbf(kernel: RBFKernel, measure: GaussianMeasure) -> float:
     d = measure.dim
-    ell2 = kernel.lengthscale**2
+    ell2 = kernel.lengthscale ** 2
     Sigma = measure.cov
-    Sigma2 = 2.0 * Sigma
-    Sigma_eff = Sigma2 + ell2 * np.eye(d)
-    norm_const = kernel.variance * np.sqrt(
-        np.linalg.det(ell2 * np.eye(d)) / np.linalg.det(Sigma_eff)
-    )
-    return float(norm_const)
+    Sigma_eff = 2.0 * Sigma + ell2 * np.eye(d)
+
+    _, logdet_ell = np.linalg.slogdet(ell2 * np.eye(d))
+    sign, logdet_eff = np.linalg.slogdet(Sigma_eff)
+    log_norm = np.log(kernel.variance) + 0.5 * (logdet_ell - logdet_eff)
+    return float(np.exp(log_norm))
 
 
-def kernel_mean_vector(X: ArrayLike, kernel: Kernel, measure, mc_samples: int = 2048, rng=None) -> np.ndarray:
+def kernel_mean_vector(X: ArrayLike, kernel: Kernel, measure, mc_samples: int = 2048,
+                       rng: np.random.Generator | None = None) -> np.ndarray:
     X = ensure_2d(X)
     if isinstance(kernel, RBFKernel) and isinstance(measure, GaussianMeasure):
         return _gaussian_kernel_mean_rbf(X, kernel, measure)
 
-    samples = measure.sample(mc_samples)
+    samples = measure.sample(mc_samples, rng=rng)
     K = kernel(samples, X)
     weights = np.full(mc_samples, 1.0 / mc_samples)
     with np.errstate(over="ignore", under="ignore", divide="ignore", invalid="ignore"):
         return K.T @ weights
 
 
-def kernel_integral_variance(kernel, measure, mc_samples: int = 4096, rng=None) -> float:
+def kernel_integral_variance(kernel: Kernel, measure, mc_samples: int = 4096,
+                             rng: np.random.Generator | None = None) -> float:
     if isinstance(kernel, RBFKernel) and isinstance(measure, GaussianMeasure):
         return _gaussian_kernel_variance_rbf(kernel, measure)
 
-    rng = rng or np.random.default_rng()
-    samples = measure.sample(mc_samples)
+    samples = measure.sample(mc_samples, rng=rng)
     K = kernel(samples, samples)
     np.fill_diagonal(K, 0.0)
     n = samples.shape[0]
@@ -67,18 +72,25 @@ def kernel_integral_variance(kernel, measure, mc_samples: int = 4096, rng=None) 
         return max(est, 0.0)
 
 
-def gp_posterior_predictive(X_train: ArrayLike, y_train: ArrayLike, X_test: ArrayLike, kernel, noise: float = 0.0, K_inv: Optional[np.ndarray] = None):
+def gp_posterior_predictive(
+    X_train: ArrayLike, y_train: ArrayLike, X_test: ArrayLike,
+    kernel: Kernel, noise: float = 0.0, L_factor: Optional[tuple] = None) -> tuple[np.ndarray, np.ndarray]:
     X_train = ensure_2d(X_train)
     X_test = ensure_2d(X_test)
     y_train = np.asarray(y_train, dtype=float)
-    K = kernel(X_train, X_train)
-    if noise > 0.0:
-        K = K + (noise**2) * np.eye(len(X_train))
-    if K_inv is None:
-        K_inv = np.linalg.solve(K, np.eye(K.shape[0]))
+
+    if L_factor is None:
+        K = kernel(X_train, X_train)
+        if noise > 0.0:
+            K = K + (noise ** 2) * np.eye(len(X_train))
+        try:
+            L_factor = cho_factor(K)
+        except np.linalg.LinAlgError:
+            raise ValueError("Kernel matrix is not positive definite. Try increasing jitter or noise.")
 
     K_s = kernel(X_train, X_test)
-    K_ss = kernel.diag(X_test)
-    mean = K_s.T @ (K_inv @ y_train)
-    var = K_ss - np.sum(K_s * (K_inv @ K_s), axis=0)
+    alpha = cho_solve(L_factor, y_train)
+    mean = K_s.T @ alpha
+    v = cho_solve(L_factor, K_s)
+    var = kernel.diag(X_test) - np.sum(K_s * v, axis=0)
     return mean, np.maximum(var, 0.0)
