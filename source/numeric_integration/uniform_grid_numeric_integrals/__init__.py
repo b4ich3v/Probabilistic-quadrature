@@ -1,0 +1,5 @@
+from source.numeric_integration.uniform_grid_numeric_integrals.rectangle_numeric_integral import RectangleNumericIntegral
+from source.numeric_integration.uniform_grid_numeric_integrals.trapezoid_numeric_integral import TrapezoidNumericIntegral
+from source.numeric_integration.uniform_grid_numeric_integrals.simpson_numeric_integral import SimpsonNumericIntegral
+
+__all__ = ["RectangleNumericIntegral", "TrapezoidNumericIntegral", "SimpsonNumericIntegral"]
