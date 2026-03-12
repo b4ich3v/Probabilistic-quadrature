@@ -26,21 +26,16 @@ class ContinuousUniformBox(RandomVariable):
     def upper(self) -> np.ndarray:
         return self._upper
 
-    def sample(self, n: int = 1, rng=None) -> np.ndarray:
-        if hasattr(rng, "random"):
-            u = rng.random((n, self.dim))
-        elif rng is None:
-            u = np.random.default_rng().random((n, self.dim))
-        else:
-            u = np.random.default_rng().random((n, self.dim))
+    def sample(self, n: int = 1, rng: np.random.Generator | None = None) -> np.ndarray:
+        rng = rng or np.random.default_rng()
+        u = rng.random((n, self.dim))
         return self._lower + u * (self._upper - self._lower)
 
     def log_prob(self, x: np.ndarray) -> np.ndarray:
         x = np.atleast_2d(x)
         if x.shape[1] != self.dim:
             raise ValueError("Input dimensionality mismatch")
-        inside = (x >= self._lower) & (x <= self._upper)
-        inside = np.all(inside, axis=1)
+        inside = np.all((x >= self._lower) & (x <= self._upper), axis=1)
         vol = np.prod(self._upper - self._lower)
         log_p = np.full(x.shape[0], -np.inf, dtype=float)
         log_p[inside] = -np.log(vol)
