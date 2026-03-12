@@ -254,6 +254,32 @@ Implemented in report experiments:
   - theory + reproducible BQ-heavy experiments
   - kernel sensitivity, budget scaling, active sampling, interpolation/derivative-assisted BQ
 
+- `source/bq_posterior_evolution.ipynb`
+  - step-by-step visualization of GP posterior updates as observations are added
+  - active vs random sampling convergence comparison
+  - point placement analysis
+
+- `source/bq_multidimensional.ipynb`
+  - BQ in 2D with surface and uncertainty heatmap visualizations
+  - convergence comparison: BQ vs Monte Carlo across three 2D test functions
+  - active BQ in 2D with adaptive point selection
+
+- `source/bq_vs_mc_convergence_rates.ipynb`
+  - log-log convergence rate analysis across all integration methods
+  - empirical convergence exponent estimation via linear regression
+  - BQ vs MC head-to-head comparison for smooth, oscillatory, peaked, and non-smooth functions
+
+- `source/bq_uncertainty_calibration.ipynb`
+  - z-score analysis of BQ posterior calibration across 10 test functions
+  - credible interval coverage curves
+  - effect of kernel mismatch and budget on calibration quality
+
+- `source/bq_kernel_hyperparameter_sensitivity.ipynb`
+  - systematic lengthscale sweep: error, posterior std, and calibration ratio
+  - multi-function sensitivity comparison
+  - 2D (lengthscale, variance) error heatmap
+  - GP posterior visualization at extreme hyperparameter settings
+
 ## 7. References
 
 - https://www.youtube.com/watch?v=T63ATAXn63Y
