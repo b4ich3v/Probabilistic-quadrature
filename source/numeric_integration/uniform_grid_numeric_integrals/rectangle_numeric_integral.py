@@ -4,8 +4,8 @@ from source.functions.function import Function
 
 
 class RectangleNumericIntegral(UniformGridNumericIntegral):
-    def __init__(self, input_function: Function, input_interval: Interval, input_x_coords: list[float], input_sub_intervals: int):
-        super().__init__(input_function, input_interval, input_x_coords, input_sub_intervals)
+    def __init__(self, func: Function, interval: Interval, nodes: list[float], sub_intervals: int):
+        super().__init__(func, interval, nodes, sub_intervals)
 
     def integrate(self) -> float:
         total = 0.0
