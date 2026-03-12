@@ -1,5 +1,6 @@
 import numpy as np
 from abc import ABC, abstractmethod
+import matplotlib.pyplot as plt
 
 from source.functions.function import Function
 from source.functions.interval import Interval
@@ -16,8 +17,6 @@ class DerivativeEstimator(ABC):
     def calculate_derivative_at(self, point: float) -> float: ...
 
     def plot_at(self, point: float, interval: Interval) -> None:
-        import matplotlib.pyplot as plt
-
         x_coords = np.linspace(interval.left, interval.right, 1000)
         f_at_point = self._function(point)
         d_at_point = self.calculate_derivative_at(point)
