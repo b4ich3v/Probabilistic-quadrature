@@ -1,39 +1,35 @@
-from typing import Callable, Sequence, Optional, Union, List
+from __future__ import annotations
+
+from typing import Callable, Optional, Sequence
 
 from source.functions.interval import Interval
 
 
 class Domain:
-    def __init__(self, input_intervals: Union[Interval, Sequence[Interval]], input_predicate: Optional[Callable[[float], bool]] = None):
-        if isinstance(input_intervals, Interval):
-            intervals: list[Interval] = [input_intervals]
+    def __init__(self, intervals: Interval | Sequence[Interval], predicate: Callable[[float], bool] | None = None):
+        if isinstance(intervals, Interval):
+            interval_list: list[Interval] = [intervals]
         else:
-            intervals = list(input_intervals)
-        if len(intervals) == 0:
-            raise RuntimeError("Domain must have at least one interval")
-        self._is_continuous = len(intervals) == 1
-        self._predicate = input_predicate
-        self._intervals = intervals
+            interval_list = list(intervals)
+        if len(interval_list) == 0:
+            raise ValueError("Domain must have at least one interval")
+        self._is_continuous = len(interval_list) == 1
+        self._predicate = predicate
+        self._intervals = interval_list
 
-    def get_intervals(self) -> List[Interval]:
+    @property
+    def intervals(self) -> list[Interval]:
         return list(self._intervals)
 
-    def get_interval(self) -> Interval:
-        if not self._is_continuous:
-            raise RuntimeError("Domain has multiple intervals; use get_intervals()")
-        return self._intervals[0]
-    
     @property
-    def intervals(self) -> List[Interval]:
-        return self._intervals
-    
-    def contains(self, input_value: Union[float, int]) -> bool:
-        predicate = self._predicate
-        if predicate is not None and not predicate(input_value):
+    def interval(self) -> Interval:
+        if not self._is_continuous:
+            raise ValueError("Domain has multiple intervals; use .intervals")
+        return self._intervals[0]
+
+    def contains(self, value: float | int) -> bool:
+        if self._predicate is not None and not self._predicate(value):
             return False
-
         if self._is_continuous:
-            interval = self._intervals[0]
-            return interval.contains(input_value)
-
-        return any(interval.contains(input_value) for interval in self._intervals)
+            return self._intervals[0].contains(value)
+        return any(iv.contains(value) for iv in self._intervals)
