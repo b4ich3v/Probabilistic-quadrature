@@ -1,0 +1,3 @@
+from source.functions.polynomial_interpolations.polynomial_interpolation_factory.polynomial_interpolation_factory import PolynomialInterpolationFactory
+
+__all__ = ["PolynomialInterpolationFactory"]
