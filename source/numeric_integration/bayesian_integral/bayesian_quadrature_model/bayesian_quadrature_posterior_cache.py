@@ -4,6 +4,6 @@ import numpy as np
 
 @dataclass
 class BQPosteriorState:
-    K_inv: np.ndarray
+    L_factor: tuple
     mu_f: np.ndarray
     sigma_f2: float
