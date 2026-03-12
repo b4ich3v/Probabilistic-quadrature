@@ -1,42 +1,6 @@
-from abc import abstractmethod
-from abc import ABC
-import numpy as np
-
-from source.functions.interval import Interval
-from source.functions.function import Function
+from abc import abstractmethod, ABC
 
 
 class NumericIntegral(ABC):
-    def __init__(self, input_function: Function, input_interval: Interval, input_x_coords: list[float], input_sub_intervals: int, validate: bool = True) -> None:
-        self._interval = input_interval
-        self._function = input_function
-        self._sub_intervals = input_sub_intervals
-        self._nodes = input_x_coords
-        if validate:
-            self._validate_sub_intervals()
-            self._validate_nodes()
-
-    def _validate_sub_intervals(self) -> None:
-        if self._sub_intervals <= 0:
-            raise RuntimeError("Count of input subintervals must be greater than 0")
-
-    def _validate_nodes(self) -> None:
-        nodes = self._nodes
-        sub_intervals = self._sub_intervals
-        if len(nodes) != sub_intervals + 1:
-            raise RuntimeError("input_x_coords must have exactly sub_intervals + 1 nodes")
-
-        left = self._interval.get_left_component()
-        right = self._interval.get_right_component()
-        if not np.isclose(nodes[0], left) or not np.isclose(nodes[-1], right):
-            raise RuntimeError("Nodes must start/end at the interval boundaries")
-
-        expected_step = (right - left) / sub_intervals
-        for i in range(1, len(nodes)):
-            step = nodes[i] - nodes[i - 1]
-            if not np.isclose(step, expected_step):
-                raise RuntimeError("Nodes must be uniformly spaced across the interval")
-
     @abstractmethod
-    def integrate(self) -> float:
-        raise RuntimeError("Not implemented yet")
+    def integrate(self) -> float: ...
