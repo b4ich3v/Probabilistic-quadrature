@@ -1,11 +1,12 @@
 import numpy as np
 
 from source.kernels.kernel import Kernel
+from source.measures.measure import Measure
 from source.numeric_integration.bayesian_integral.bayesian_quadrature_model.utils import kernel_mean_vector, kernel_integral_variance
 
 
 class BQIntegralTermsComputer:
-    def __init__(self, kernel: Kernel, measure, mc_samples_mean: int, mc_samples_var: int):
+    def __init__(self, kernel: Kernel, measure: Measure, mc_samples_mean: int, mc_samples_var: int):
         self.kernel = kernel
         self.measure = measure
         self.mc_samples_mean = mc_samples_mean
