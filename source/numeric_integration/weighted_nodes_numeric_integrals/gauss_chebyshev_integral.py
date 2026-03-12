@@ -6,12 +6,8 @@ from source.numeric_integration.weighted_nodes_numeric_integral import WeightedN
 
 
 class GaussChebyshevIntegral(WeightedNodesNumericIntegral):
-    def __init__(self, input_function: Function, n: int):
+    def __init__(self, func: Function, n: int):
+        if n <= 0:
+            raise ValueError("n (number of quadrature points) must be positive")
         nodes, weights = np.polynomial.chebyshev.chebgauss(n)
-        super().__init__(input_function, nodes.tolist(), weights.tolist(), Interval(-1.0, 1.0))
-
-    def integrate(self) -> float:
-        total = 0.0
-        for x, w in zip(self._nodes, self._weights):
-            total += w * self._function(x)
-        return float(total)
+        super().__init__(func, nodes.tolist(), weights.tolist(), Interval(-1.0, 1.0))
