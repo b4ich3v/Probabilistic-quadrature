@@ -1,9 +1,7 @@
 import numpy as np
-from typing import Optional
 
 from source.measures.measure import Measure
 from source.random_variables.continuous_random_variables.uniform_box import ContinuousUniformBox
-from source.random_variables.random_variable import RandomVariable
 
 
 class UniformBoxMeasure(Measure):
@@ -20,5 +18,5 @@ class UniformBoxMeasure(Measure):
     def volume(self) -> float:
         return float(np.prod(self.upper - self.lower))
 
-    def sample(self, n: int, rv: Optional[RandomVariable] = None) -> np.ndarray:
-        return (rv or self._rv).sample(n)
+    def sample(self, n: int, rng: np.random.Generator | None = None) -> np.ndarray:
+        return self._rv.sample(n, rng=rng)
