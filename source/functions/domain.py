@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import Callable, Optional, Sequence
 
 from source.functions.interval import Interval
