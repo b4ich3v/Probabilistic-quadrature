@@ -35,61 +35,59 @@ This section documents every class and enum currently present in `source/**/*.py
 
 ### 3.1 Core Math Layer (`source/functions`)
 
-- `Interval` (file: `interval.py`; base: `-`): Closed interval `[left, right]`, ordering/comparison helpers, membership check, width.
+- `Interval` (file: `interval.py`; base: `-`): Closed interval `[left, right]` with properties `.left`, `.right`, `.width`, ordering/comparison helpers, membership check.
 - `Range` (file: `range.py`; base: `-`): Output range object for codomain validation and clamping.
-- `Domain` (file: `domain.py`; base: `-`): Domain as one or multiple intervals; supports `contains`, `get_interval` (single), `get_intervals` (list).
+- `Domain` (file: `domain.py`; base: `-`): Domain as one or multiple intervals; supports `contains`, `.interval` (single), `.intervals` (defensive copy).
 - `Function` (file: `function.py`; base: `-`): Callable wrapper with domain/codomain checks and metadata (`name`).
-- `MeasuredFunction` (file: `measured_function.py`; base: `Function`): Vectorized function tied to a measure, optional known true integral.
+- `MeasuredFunction` (file: `measured_function.py`; base: `-`): Standalone vectorized callable tied to a measure, optional known true integral.
 
 ### 3.2 Derivative Layer (`source/functions/derivatives`)
 
-- `DerivativeEstimator` (file: `derivative_estimator.py`; base: `ABC`): Abstract derivative interface and tangent plot helper.
+- `DerivativeEstimator` (file: `derivative_estimator.py`; base: `ABC`): Abstract derivative interface with precision validation and tangent plot helper.
 - `ForwardDerivativeEstimator` (file: `forward_derivative_estimator.py`; base: `DerivativeEstimator`): Forward finite difference derivative.
 - `CentralDifferenceDerivativeEstimator` (file: `central_difference_derivative_estimator.py`; base: `DerivativeEstimator`): Central finite difference derivative.
 
 ### 3.3 Polynomial Interpolation Layer (`source/functions/polynomial_interpolations`)
 
-- `InterpolationPattern` (file: `interpolation_pattern.py`; base: `Enum`): Dispatch enum: `LAGRANGE`, `NEWTON`, `HERMIT`.
+- `InterpolationPattern` (file: `interpolation_pattern.py`; base: `Enum`): Dispatch enum: `LAGRANGE`, `NEWTON`, `HERMITE`.
 - `InterpolationPoly` (file: `interpolation_polynomial.py`; base: `ABC`): Abstract interpolation polynomial API with node/value validation.
 - `LagrangeInterpolationPoly` (file: `lagrange_interpolation_polynomial.py`; base: `InterpolationPoly`): Lagrange polynomial evaluator.
 - `NewtonInterpolationPoly` (file: `newton_interpolation_polynomial.py`; base: `InterpolationPoly`): Newton divided-difference polynomial evaluator.
-- `HermitInterpolationPoly` (file: `hermit_interpolation_polynomial.py`; base: `InterpolationPoly`): Hermite interpolation using derivative estimates.
-- `PolyInterpolationAbstractFactory` (file: `polynomial_interpolation_factory/polynomial_interpolation_abstract_factory.py`; base: `ABC`): Abstract factory for interpolation objects.
-- `PolynomialInterpolationFactory` (file: `polynomial_interpolation_factory/polynomial_interpolation_factory.py`; base: `PolyInterpolationAbstractFactory`): Concrete interpolation factory.
+- `HermiteInterpolationPoly` (file: `hermite_interpolation_polynomial.py`; base: `InterpolationPoly`): Hermite interpolation using derivative estimates.
+- `PolynomialInterpolationFactory` (file: `polynomial_interpolation_factory/polynomial_interpolation_factory.py`; base: `-`): Static factory for creating interpolation objects.
 
 ### 3.4 Random Variable Layer (`source/random_variables`)
 
-- `RandomVariable` (file: `random_variable.py`; base: `ABC`): Abstract RV API (`sample`, `log_prob`, `mean`, `var`).
+- `RandomVariable` (file: `random_variable.py`; base: `ABC`): Abstract RV API (`sample`, `log_prob`, `mean`, `var`, `pdf`).
 - `Uniform` (file: `continuous_random_variables/uniform.py`; base: `RandomVariable`): 1D uniform RV.
 - `ContinuousUniformBox` (file: `continuous_random_variables/uniform_box.py`; base: `RandomVariable`): Axis-aligned box uniform RV in R^d.
 - `Normal` (file: `continuous_random_variables/normal.py`; base: `RandomVariable`): Diagonal Gaussian RV in R^d.
 
 ### 3.5 Measure Layer (`source/measures`)
 
-- `Measure` (file: `measure.py`; base: `ABC`): Abstract measure API (`dim`, `sample`).
+- `Measure` (file: `measure.py`; base: `ABC`): Abstract measure API (`dim`, `sample` with optional `rng`).
 - `UniformBoxMeasure` (file: `uniform_box_measure.py`; base: `Measure`): Uniform measure over hyper-rectangle.
-- `GaussianMeasure` (file: `gaussian_measure.py`; base: `Measure`): Gaussian measure with full/diag covariance sampling path.
+- `GaussianMeasure` (file: `gaussian_measure.py`; base: `Measure`): Gaussian measure with full/diag covariance sampling path, symmetry validation.
 
 ### 3.6 Kernel Layer (`source/kernels`)
 
 - `Kernel` (file: `kernel.py`; base: `ABC`): Abstract kernel API; includes squared-Euclidean helper.
-- `RBFKernel` (file: `rbf_kernel.py`; base: `Kernel`): RBF kernel with `lengthscale`, `variance`.
-- `Matern32Kernel` (file: `matern32_kernel.py`; base: `Kernel`): Matern 3/2 kernel with `lengthscale`, `variance`.
+- `RBFKernel` (file: `rbf_kernel.py`; base: `Kernel`): RBF kernel with validated `lengthscale`, `variance`.
+- `Matern32Kernel` (file: `matern32_kernel.py`; base: `Kernel`): Matern 3/2 kernel with validated `lengthscale`, `variance`.
 
 ### 3.7 Integration Core Layer (`source/numeric_integration`)
 
-- `NumericIntegral` (file: `numeric_integral.py`; base: `ABC`): Base integration abstraction with optional node validation.
+- `NumericIntegral` (file: `numeric_integral.py`; base: `ABC`): Slim integration ABC with a single abstract `integrate()` method.
 - `NumericIntegrationPattern` (file: `numeric_integration_pattern.py`; base: `Enum`): Integration dispatch enum (`RECTANGLE`, `TRAPEZOID`, `SIMPSON`, `MONTE_CARLO`, `LEGENDRE`, `HERMITE`, `LAGUERRE`, `CHEBYSHEV`, `BAYESIAN`).
-- `UniformGridNumericIntegral` (file: `uniform_grid_numeric_integral.py`; base: `NumericIntegral`): Base class for equally spaced grid methods.
-- `WeightedNodesNumericIntegral` (file: `weighted_nodes_numeric_integral.py`; base: `NumericIntegral`): Base class for precomputed nodes/weights methods.
-- `NumericIntegralAbstractFactory` (file: `numeric_integral_factory/numeric_integral_abstract_factory.py`; base: `ABC`): Abstract factory for integration methods.
-- `NumericIntegralFactory` (file: `numeric_integral_factory/numeric_integral_factory.py`; base: `NumericIntegralAbstractFactory`): Concrete global integration factory.
+- `UniformGridNumericIntegral` (file: `uniform_grid_numeric_integral.py`; base: `NumericIntegral`): Base class for equally spaced grid methods, owns interval/node/sub-interval state and validation.
+- `WeightedNodesNumericIntegral` (file: `weighted_nodes_numeric_integral.py`; base: `NumericIntegral`): Base class for precomputed nodes/weights methods with shared `integrate()` via `np.dot`.
+- `NumericIntegralFactory` (file: `numeric_integral_factory/numeric_integral_factory.py`; base: `-`): Static factory for all integration methods.
 
 ### 3.8 Uniform Grid Deterministic Rules (`source/numeric_integration/uniform_grid_numeric_integrals`)
 
 - `RectangleNumericIntegral` (file: `rectangle_numeric_integral.py`; base: `UniformGridNumericIntegral`): Midpoint rectangle rule.
-- `TrapezoidNumericIntegral` (file: `trapezoid_numeric_integral.py`; base: `UniformGridNumericIntegral`): Trapezoidal rule.
-- `SimpsonNumericIntegral` (file: `simpson_numeric_intergral.py`; base: `UniformGridNumericIntegral`): Simpson rule over each sub-interval.
+- `TrapezoidNumericIntegral` (file: `trapezoid_numeric_integral.py`; base: `UniformGridNumericIntegral`): Trapezoidal rule with optimized single-pass evaluation.
+- `SimpsonNumericIntegral` (file: `simpson_numeric_integral.py`; base: `UniformGridNumericIntegral`): Simpson rule with optimized single-pass evaluation.
 
 ### 3.9 Weighted-Node Gaussian Rules (`source/numeric_integration/weighted_nodes_numeric_integrals`)
 
@@ -101,23 +99,22 @@ This section documents every class and enum currently present in `source/**/*.py
 
 ### 3.10 Monte Carlo Layer (`source/numeric_integration/monte_carlo`)
 
-- `MonteCarloIntegrationStrategy` (file: `monte_carlo_stretegies.py`; base: `Enum`): MC dispatch enum: `STANDARD`, `WEIGHTED`, `RECURSIVE`.
+- `MonteCarloIntegrationStrategy` (file: `monte_carlo_strategies.py`; base: `Enum`): MC dispatch enum: `STANDARD`, `WEIGHTED`, `RECURSIVE`.
 - `MonteCarloNumericIntegral` (file: `monte_carlo_numeric_integral.py`; base: `NumericIntegral`): MC base class with sample count and stderr slot.
 - `StandardMonteCarloIntegral` (file: `standard_monte_carlo_integral.py`; base: `MonteCarloNumericIntegral`): Standard sample-average estimator.
-- `WeightedMonteCarloIntegral` (file: `weighted_monte_carlo_integral.py`; base: `MonteCarloNumericIntegral`): Weighted MC estimator via proposal and weight callbacks.
-- `RecursiveMonteCarloIntegral` (file: `recursive_monte_carlo_integral.py`; base: `MonteCarloNumericIntegral`): Recursive 1D stratified-style estimator over interval splits.
-- `MonteCarloAbstractFactory` (file: `monte_carlo_factory/monte_carlo_abstract_factory.py`; base: `ABC`): Abstract MC factory.
-- `MonteCarloFactory` (file: `monte_carlo_factory/monte_carlo_factory.py`; base: `MonteCarloAbstractFactory`): Concrete MC factory.
+- `WeightedMonteCarloIntegral` (file: `weighted_monte_carlo_integral.py`; base: `MonteCarloNumericIntegral`): Weighted MC estimator with required proposal and weight callbacks.
+- `RecursiveMonteCarloIntegral` (file: `recursive_monte_carlo_integral.py`; base: `MonteCarloNumericIntegral`): Recursive 1D stratified estimator (requires `UniformBoxMeasure`).
+- `MonteCarloFactory` (file: `monte_carlo_factory/monte_carlo_factory.py`; base: `-`): Static MC factory.
 
 ### 3.11 Bayesian Quadrature Layer (`source/numeric_integration/bayesian_integral`)
 
 - `BayesianQuadratureIntegral` (file: `bayesian_quadrature_integral.py`; base: `NumericIntegral`): Integration wrapper that fits `BayesianQuadratureModel` and returns posterior mean.
-- `GaussianProcess` (file: `gaussian_process.py`; base: `-`): GP training/prediction helper used by BQ model.
+- `GaussianProcess` (file: `gaussian_process.py`; base: `-`): GP training/prediction helper using Cholesky decomposition for numerical stability.
 - `ActiveBQSelector` (file: `active_bayesian_quadrature.py`; base: `-`): Active point selector using variance-reduction criterion.
 - `BQConfig` (file: `bayesian_quadrature_model/bayesian_quadrature_config.py`; base: `dataclass`): BQ hyperparameters and validation (`noise`, `jitter`, MC sample counts).
 - `BQDataset` (file: `bayesian_quadrature_model/bayesian_quadrature_data_set.py`; base: `dataclass`): Training data container with append/update utilities.
 - `BQIntegralTermsComputer` (file: `bayesian_quadrature_model/bayesian_quadrature_integral_terms.py`; base: `-`): Computes kernel mean vector and integrated kernel variance terms.
-- `BQPosteriorState` (file: `bayesian_quadrature_model/bayesian_quadrature_posterior_cache.py`; base: `dataclass`): Cached posterior state (`K_inv`, `mu_f`, `sigma_f2`).
+- `BQPosteriorState` (file: `bayesian_quadrature_model/bayesian_quadrature_posterior_cache.py`; base: `dataclass`): Cached posterior state (`L_factor`, `mu_f`, `sigma_f2`).
 - `BayesianQuadratureModel` (file: `bayesian_quadrature_model/bayesian_quadrature_model.py`; base: `-`): Main BQ model: fit/update, integral posterior, predictive posterior.
 
 ### 3.12 Top-Level Utility Functions
@@ -128,11 +125,11 @@ File: `source/numeric_integration/bayesian_integral/active_bayesian_quadrature.p
 
 File: `source/numeric_integration/bayesian_integral/bayesian_quadrature_model/utils.py`
 - `ensure_2d`: Shape normalization utility for arrays.
-- `_gaussian_kernel_mean_rbf`: Closed-form RBF kernel mean for Gaussian measure.
-- `_gaussian_kernel_variance_rbf`: Closed-form integrated RBF kernel variance for Gaussian measure.
+- `_gaussian_kernel_mean_rbf`: Closed-form RBF kernel mean for Gaussian measure (using slogdet for stability).
+- `_gaussian_kernel_variance_rbf`: Closed-form integrated RBF kernel variance for Gaussian measure (using slogdet for stability).
 - `kernel_mean_vector`: Generic or closed-form kernel mean vector calculator.
 - `kernel_integral_variance`: Generic or closed-form integrated kernel variance calculator.
-- `gp_posterior_predictive`: GP predictive mean/variance helper.
+- `gp_posterior_predictive`: GP predictive mean/variance helper using Cholesky decomposition.
 
 ## 4. Inheritance Hierarchies
 
@@ -165,7 +162,7 @@ NumericIntegral (ABC)
 InterpolationPoly (ABC)
   |- LagrangeInterpolationPoly
   |- NewtonInterpolationPoly
-  |- HermitInterpolationPoly
+  |- HermiteInterpolationPoly
 
 DerivativeEstimator (ABC)
   |- ForwardDerivativeEstimator
@@ -189,17 +186,12 @@ Kernel (ABC)
   |- Matern32Kernel
 ```
 
-### 4.4 Factory hierarchy
+### 4.4 Factories
 
 ```text
-NumericIntegralAbstractFactory (ABC)
-  |- NumericIntegralFactory
-
-MonteCarloAbstractFactory (ABC)
-  |- MonteCarloFactory
-
-PolyInterpolationAbstractFactory (ABC)
-  |- PolynomialInterpolationFactory
+NumericIntegralFactory (static)
+MonteCarloFactory (static)
+PolynomialInterpolationFactory (static)
 ```
 
 ## 5. Runtime Logic and Data Flow
@@ -229,7 +221,7 @@ PolyInterpolationAbstractFactory (ABC)
 
 1. Prepare `X, y` observations of integrand.
 2. Build kernel (`RBFKernel` or `Matern32Kernel`) and measure.
-3. Fit `BayesianQuadratureModel` (`GaussianProcess` + integral terms + cache).
+3. Fit `BayesianQuadratureModel` (`GaussianProcess` with Cholesky + integral terms + cache).
 4. Query `integral_posterior()` for posterior mean and variance.
 
 ### 5.5 Active Bayesian Quadrature flow
