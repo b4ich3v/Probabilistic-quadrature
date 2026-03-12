@@ -1,15 +1,14 @@
-from abc import ABC
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 
 class InterpolationPoly(ABC):
     def __init__(self, nodes: list[float], values: list[float]) -> None:
-        if len(nodes) != len(values):
-            raise ValueError("nodes and values must be with equal size")
-        if len(set(nodes)) != len(nodes):
-            raise ValueError("nodes must not contains duplicates")
         if len(nodes) == 0:
-            raise ValueError("must be atleast one point")
+            raise ValueError("Must have at least one interpolation point")
+        if len(nodes) != len(values):
+            raise ValueError("nodes and values must have equal size")
+        if len(set(nodes)) != len(nodes):
+            raise ValueError("nodes must not contain duplicates")
 
         self._nodes = list(nodes)
         self._values = list(values)
@@ -19,8 +18,7 @@ class InterpolationPoly(ABC):
         return len(self._nodes) - 1
 
     @abstractmethod
-    def evaluate(self, x: float) -> float:
-        raise NotImplementedError
-    
+    def evaluate(self, x: float) -> float: ...
+
     def __call__(self, x: float) -> float:
         return self.evaluate(x)
