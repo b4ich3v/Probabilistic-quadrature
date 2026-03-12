@@ -1,0 +1,6 @@
+from source.numeric_integration.weighted_nodes_numeric_integrals.gauss_legendre_integral import GaussLegendreIntegral
+from source.numeric_integration.weighted_nodes_numeric_integrals.gauss_hermite_integral import GaussHermiteIntegral
+from source.numeric_integration.weighted_nodes_numeric_integrals.gauss_laguerre_integral import GaussLaguerreIntegral
+from source.numeric_integration.weighted_nodes_numeric_integrals.gauss_chebyshev_integral import GaussChebyshevIntegral
+
+__all__ = ["GaussLegendreIntegral", "GaussHermiteIntegral", "GaussLaguerreIntegral", "GaussChebyshevIntegral"]
