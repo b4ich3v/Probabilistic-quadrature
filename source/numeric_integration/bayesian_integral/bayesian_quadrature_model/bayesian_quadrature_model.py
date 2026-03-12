@@ -1,8 +1,9 @@
 import numpy as np
 from numpy.typing import ArrayLike
-from typing import Optional, Tuple
+from typing import Optional
 
 from source.kernels.kernel import Kernel
+from source.measures.measure import Measure
 from source.numeric_integration.bayesian_integral.gaussian_process import GaussianProcess
 from source.numeric_integration.bayesian_integral.bayesian_quadrature_model.bayesian_quadrature_config import BQConfig
 from source.numeric_integration.bayesian_integral.bayesian_quadrature_model.bayesian_quadrature_data_set import BQDataset
@@ -12,7 +13,7 @@ from source.numeric_integration.bayesian_integral.bayesian_quadrature_model.util
 
 
 class BayesianQuadratureModel:
-    def __init__(self, kernel: Kernel, measure, config: Optional[BQConfig] = None):
+    def __init__(self, kernel: Kernel, measure: Measure, config: Optional[BQConfig] = None):
         self.kernel = kernel
         self.measure = measure
         self.config = config or BQConfig()
@@ -43,32 +44,35 @@ class BayesianQuadratureModel:
 
     def _recompute_cache(self) -> None:
         ds = self.dataset
-        assert ds is not None
+        if ds is None:
+            raise RuntimeError("Cannot recompute cache without data")
         self._gp.fit(ds.X, ds.y)
         mu_f, sigma_f2 = self._integral_terms.compute(ds.X)
-        self._state = BQPosteriorState(K_inv=self._gp.K_inv, mu_f=mu_f, sigma_f2=sigma_f2)
+        self._state = BQPosteriorState(L_factor=self._gp.L_factor, mu_f=mu_f, sigma_f2=sigma_f2)
 
-    def integral_posterior(self) -> Tuple[float, float]:
+    def integral_posterior(self) -> tuple[float, float]:
         self._check_fitted()
         state = self._state
         mu_f = state.mu_f
         sigma_f2 = state.sigma_f2
-        K_inv = state.K_inv
         y_train = self.dataset.y
-        mean_F = mu_f @ (K_inv @ y_train)
-        var_F = sigma_f2 - mu_f @ (K_inv @ mu_f)
+        from scipy.linalg import cho_solve
+        alpha = cho_solve(state.L_factor, y_train)
+        mean_F = mu_f @ alpha
+        v = cho_solve(state.L_factor, mu_f)
+        var_F = sigma_f2 - mu_f @ v
         return float(mean_F), float(np.maximum(var_F, 0.0))
 
     def predict(self, X_test: ArrayLike) -> tuple[np.ndarray, np.ndarray]:
         self._check_fitted()
         return gp_posterior_predictive(
             self.dataset.X, self.dataset.y, X_test,
-            self.kernel, noise=self.config.noise, K_inv=self._gp.K_inv
+            self.kernel, noise=self.config.noise, L_factor=self._gp.L_factor
         )
 
     @property
-    def K_inv(self) -> Optional[np.ndarray]:
-        return None if self._state is None else self._state.K_inv
+    def L_factor(self) -> Optional[tuple]:
+        return None if self._state is None else self._state.L_factor
 
     @property
     def mu_f(self) -> Optional[np.ndarray]:
