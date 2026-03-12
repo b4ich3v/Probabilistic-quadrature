@@ -1,11 +1,10 @@
 import numpy as np
 from numpy.typing import ArrayLike
 from typing import Optional
+from scipy.linalg import cho_factor, cho_solve
 
 from source.kernels.kernel import Kernel
-from source.numeric_integration.bayesian_integral.bayesian_quadrature_model.utils import (
-    kernel_mean_vector, kernel_integral_variance, ensure_2d
-)
+from source.numeric_integration.bayesian_integral.bayesian_quadrature_model.utils import ensure_2d
 
 
 class GaussianProcess:
@@ -19,11 +18,10 @@ class GaussianProcess:
         self.jitter = float(jitter)
         self.X_train: Optional[np.ndarray] = None
         self.y_train: Optional[np.ndarray] = None
-        self.K: Optional[np.ndarray] = None
-        self.K_inv: Optional[np.ndarray] = None
+        self.L_factor: Optional[tuple] = None
 
     def _check_fitted(self) -> None:
-        if self.X_train is None or self.y_train is None or self.K_inv is None:
+        if self.X_train is None or self.y_train is None or self.L_factor is None:
             raise RuntimeError("GaussianProcess is not fitted yet")
 
     def fit(self, X: ArrayLike, y: ArrayLike) -> "GaussianProcess":
@@ -34,36 +32,30 @@ class GaussianProcess:
 
         K = self.kernel(X, X)
         if self.noise > 0.0:
-            K = K + (self.noise**2) * np.eye(len(X))
+            K = K + (self.noise ** 2) * np.eye(len(X))
         if self.jitter > 0.0:
             K = K + self.jitter * np.eye(len(X))
 
-        K_inv = np.linalg.solve(K, np.eye(K.shape[0]))
+        try:
+            L_factor = cho_factor(K)
+        except np.linalg.LinAlgError:
+            raise ValueError("Kernel matrix is not positive definite. Try increasing jitter or noise.")
+
         self.X_train = X
         self.y_train = y
-        self.K = K
-        self.K_inv = K_inv
+        self.L_factor = L_factor
         return self
+
+    def solve(self, v: np.ndarray) -> np.ndarray:
+        self._check_fitted()
+        return cho_solve(self.L_factor, v)
 
     def predict(self, X_test: ArrayLike) -> tuple[np.ndarray, np.ndarray]:
         self._check_fitted()
         X_test = ensure_2d(X_test)
-        X_train = self.X_train
-        y_train = self.y_train
-        K_inv = self.K_inv
-        K_s = self.kernel(X_train, X_test)
-        K_ss = self.kernel.diag(X_test)
-        mean = K_s.T @ (K_inv @ y_train)
-        var = K_ss - np.sum(K_s * (K_inv @ K_s), axis=0)
+        K_s = self.kernel(self.X_train, X_test)
+        alpha = cho_solve(self.L_factor, self.y_train)
+        mean = K_s.T @ alpha
+        v = cho_solve(self.L_factor, K_s)
+        var = self.kernel.diag(X_test) - np.sum(K_s * v, axis=0)
         return mean, np.maximum(var, 0.0)
-
-    def integral_posterior(self, measure) -> tuple[float, float]:
-        self._check_fitted()
-        X_train = self.X_train
-        y_train = self.y_train
-        K_inv = self.K_inv
-        mu_f = kernel_mean_vector(X_train, self.kernel, measure)
-        sigma_f2 = kernel_integral_variance(self.kernel, measure)
-        mean_F = mu_f @ (K_inv @ y_train)
-        var_F = sigma_f2 - mu_f @ (K_inv @ mu_f)
-        return float(mean_F), float(np.maximum(var_F, 0.0))
