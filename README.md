@@ -290,4 +290,4 @@ Implemented in report experiments:
 - https://papers.nips.cc/paper/2150-bayesian-monte-carlo
 - https://www.microsoft.com/en-us/research/publication/deriving-quadrature-rules-gaussian-processes
 - https://www.youtube.com/watch?v=QyPo6vqf4TU&list=PL2cnXSwRGGYP3jAUaaS6IaBvlVmxM1shw
-- 
+- https://www.youtube.com/watch?v=eHhF1qQ-vSY&list=PL2cnXSwRGGYMkw5sSqL_69347N5iN_xrp
