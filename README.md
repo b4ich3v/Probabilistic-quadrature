@@ -25,7 +25,7 @@ There is currently no CLI script in `source/` (for example, no `source/main.py` 
 
 Primary usage entry points are notebooks:
 
-- `source/numeric_intergration.ipynb`
+- `source/numeric_integration.ipynb`
 - `source/polynomial_interpolations.ipynb`
 - `source/final_project_report.ipynb`
 
@@ -241,7 +241,7 @@ Implemented in report experiments:
 
 ## 6. Notebooks and Their Purpose
 
-- `source/numeric_intergration.ipynb`
+- `source/numeric_integration.ipynb`
   - full comparison across deterministic rules, Gaussian quadrature, MC, BQ
   - includes interpolation + integration comparison section
 
