@@ -27,6 +27,7 @@ class MeasuredFunction:
     def name(self) -> str:
         return self._name
 
+    # Expects (n, d) input; bounds-checks only for UniformBoxMeasure
     def __call__(self, X: np.ndarray) -> np.ndarray:
         X = np.asarray(X)
         X2 = np.atleast_2d(X)

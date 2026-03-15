@@ -7,6 +7,7 @@ from source.kernels.kernel import Kernel
 from source.numeric_integration.bayesian_integral.bayesian_quadrature_model.utils import ensure_2d
 
 
+# GP regression using Cholesky decomposition for numerical stability
 class GaussianProcess:
     def __init__(self, kernel: Kernel, noise: float = 0.0, jitter: float = 0.0):
         if noise < 0:
@@ -30,6 +31,7 @@ class GaussianProcess:
         if y.shape[0] != X.shape[0]:
             raise ValueError("X and y must have same first dimension")
 
+        # K_noisy = K + sigma_n^2 * I + jitter * I
         K = self.kernel(X, X)
         if self.noise > 0.0:
             K = K + (self.noise ** 2) * np.eye(len(X))
@@ -50,6 +52,7 @@ class GaussianProcess:
         self._check_fitted()
         return cho_solve(self.L_factor, v)
 
+    # Posterior mean = K_s^T * K^{-1} * y, variance = k(x*,x*) - K_s^T * K^{-1} * K_s
     def predict(self, X_test: ArrayLike) -> tuple[np.ndarray, np.ndarray]:
         self._check_fitted()
         X_test = ensure_2d(X_test)
@@ -58,4 +61,4 @@ class GaussianProcess:
         mean = K_s.T @ alpha
         v = cho_solve(self.L_factor, K_s)
         var = self.kernel.diag(X_test) - np.sum(K_s * v, axis=0)
-        return mean, np.maximum(var, 0.0)
+        return mean, np.maximum(var, 0.0)  # clamp negative variances from numerics

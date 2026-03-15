@@ -6,6 +6,7 @@ from source.numeric_integration.weighted_nodes_numeric_integral import WeightedN
 from source.numeric_integration.weighted_nodes_numeric_integrals.affine_transformation import AffineTransformation
 
 
+# Gauss-Legendre quadrature; supports arbitrary [a,b] via affine mapping
 class GaussLegendreIntegral(WeightedNodesNumericIntegral):
     def __init__(self, func: Function, n: int, interval: Interval | None = None):
         if n <= 0:

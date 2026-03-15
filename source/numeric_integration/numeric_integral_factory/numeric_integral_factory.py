@@ -14,6 +14,7 @@ from source.numeric_integration.weighted_nodes_numeric_integrals.gauss_chebyshev
 from source.numeric_integration.bayesian_integral.bayesian_quadrature_integral import BayesianQuadratureIntegral
 
 
+# Central factory dispatching all integration methods by pattern enum
 class NumericIntegralFactory:
     @staticmethod
     def create(pattern: NumericIntegrationPattern, monte_carlo_strategy: Optional[MonteCarloIntegrationStrategy] = None, *args, **kwargs) -> NumericIntegral:

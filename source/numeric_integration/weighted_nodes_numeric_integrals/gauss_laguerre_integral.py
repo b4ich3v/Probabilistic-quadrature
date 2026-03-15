@@ -5,6 +5,7 @@ from source.functions.function import Function
 from source.numeric_integration.weighted_nodes_numeric_integral import WeightedNodesNumericIntegral
 
 
+# Gauss-Laguerre quadrature for integrals weighted by exp(-x) on [0, inf)
 class GaussLaguerreIntegral(WeightedNodesNumericIntegral):
     def __init__(self, func: Function, n: int):
         if n <= 0:

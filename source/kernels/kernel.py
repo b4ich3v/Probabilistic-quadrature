@@ -2,7 +2,9 @@ from abc import ABC, abstractmethod
 import numpy as np
 
 
+# Abstract positive-definite kernel k(X, Y) for Gaussian processes
 class Kernel(ABC):
+    # ||x_i - y_j||^2 via the expansion ||x||^2 + ||y||^2 - 2<x,y>, clamped >= 0
     def _squared_euclidean(self, X: np.ndarray, Y: np.ndarray) -> np.ndarray:
         X = np.atleast_2d(X)
         Y = np.atleast_2d(Y)

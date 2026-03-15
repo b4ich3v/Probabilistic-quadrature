@@ -3,6 +3,7 @@ import numpy as np
 from source.random_variables.random_variable import RandomVariable
 
 
+# Axis-aligned uniform distribution over a d-dimensional box
 class ContinuousUniformBox(RandomVariable):
     def __init__(self, lower: np.ndarray, upper: np.ndarray):
         lower = np.atleast_1d(lower).astype(float)

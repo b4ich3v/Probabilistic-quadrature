@@ -3,6 +3,7 @@ import numpy as np
 from source.kernels.kernel import Kernel
 
 
+# k(x,y) = variance * (1 + sqrt(3)*r) * exp(-sqrt(3)*r), r = ||x-y||/ell
 class Matern32Kernel(Kernel):
     def __init__(self, lengthscale: float = 1.0, variance: float = 1.0):
         if lengthscale <= 0:

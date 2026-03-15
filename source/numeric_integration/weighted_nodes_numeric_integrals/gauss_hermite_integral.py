@@ -5,6 +5,7 @@ from source.functions.function import Function
 from source.numeric_integration.weighted_nodes_numeric_integral import WeightedNodesNumericIntegral
 
 
+# Gauss-Hermite quadrature for integrals weighted by exp(-x^2) on (-inf, inf)
 class GaussHermiteIntegral(WeightedNodesNumericIntegral):
     def __init__(self, func: Function, n: int):
         if n <= 0:

@@ -5,6 +5,7 @@ from source.functions.domain import Domain
 from source.functions.range import Range
 
 
+# Callable wrapper with domain and optional codomain validation
 class Function:
     def __init__(self, func: Callable[[float], float], domain: Domain, codomain: Optional[Range] = None, name: str = "f") -> None:
         self._function = func
@@ -24,6 +25,7 @@ class Function:
     def name(self) -> str:
         return self._name
 
+    # Dispatch by input type: scalar returns scalar, collection returns list
     def __call__(self, input_values: float | Sequence[float] | np.ndarray) -> float | list[float]:
         if isinstance(input_values, np.ndarray):
             return [self._evaluate_single(float(x)) for x in input_values.flat]

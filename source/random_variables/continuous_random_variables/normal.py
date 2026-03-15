@@ -3,6 +3,7 @@ import numpy as np
 from source.random_variables.random_variable import RandomVariable
 
 
+# Diagonal Gaussian in R^d; scalar std is broadcast to all dimensions
 class Normal(RandomVariable):
     def __init__(self, mean: float | np.ndarray, std: float | np.ndarray):
         mu = np.atleast_1d(mean).astype(float)
@@ -12,7 +13,7 @@ class Normal(RandomVariable):
         if np.any(std_arr <= 0):
             raise ValueError("std must be positive")
         if std_arr.shape == (1,):
-            std_arr = np.full_like(mu, std_arr.item())
+            std_arr = np.full_like(mu, std_arr.item())  # broadcast scalar to d dims
         self._mean = mu
         self._std = std_arr
 

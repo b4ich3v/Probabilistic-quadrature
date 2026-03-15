@@ -2,6 +2,7 @@ from source.functions.derivatives.derivative_estimator import DerivativeEstimato
 from source.functions.polynomial_interpolations.interpolation_polynomial import InterpolationPoly
 
 
+# Hermite interpolation matching both values and first derivatives, degree 2n-1
 class HermiteInterpolationPoly(InterpolationPoly):
     def __init__(self, nodes: list[float], values: list[float], derivative_estimator: DerivativeEstimator) -> None:
         super().__init__(nodes, values)
@@ -15,9 +16,10 @@ class HermiteInterpolationPoly(InterpolationPoly):
     def degree(self) -> int:
         return 2 * len(self._nodes) - 1
 
+    # Build doubled-node divided difference table for Hermite form
     def _build_coefficients(self) -> tuple[list[float], list[float]]:
         n = len(self._nodes)
-        m = 2 * n
+        m = 2 * n  # each node appears twice (value + derivative)
         z = [0.0] * m
         q = [[0.0 for _ in range(m)] for _ in range(m)]
 
@@ -28,6 +30,7 @@ class HermiteInterpolationPoly(InterpolationPoly):
         for j in range(1, m):
             for i in range(m - j):
                 if j == 1 and z[i] == z[i + 1]:
+                    # Coincident nodes: use derivative instead of divided difference
                     q[i][j] = self._derivatives[i // 2]
                 else:
                     denominator = z[i + j] - z[i]
@@ -38,6 +41,7 @@ class HermiteInterpolationPoly(InterpolationPoly):
         coefficients = [q[0][j] for j in range(m)]
         return z, coefficients
 
+    # Horner evaluation on the doubled-node basis
     def evaluate(self, x: float) -> float:
         result = self._coefficients[-1]
         for i in range(len(self._coefficients) - 2, -1, -1):

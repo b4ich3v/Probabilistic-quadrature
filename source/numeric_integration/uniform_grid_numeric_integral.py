@@ -5,6 +5,7 @@ from source.functions.interval import Interval
 from source.functions.function import Function
 
 
+# Base for equally-spaced grid rules (rectangle, trapezoid, Simpson)
 class UniformGridNumericIntegral(NumericIntegral):
     def __init__(self, func: Function, interval: Interval, nodes: list[float], sub_intervals: int) -> None:
         if sub_intervals <= 0:
@@ -17,6 +18,7 @@ class UniformGridNumericIntegral(NumericIntegral):
         if not np.isclose(nodes[0], left) or not np.isclose(nodes[-1], right):
             raise ValueError("Nodes must start/end at the interval boundaries")
 
+        # Verify uniform spacing within floating-point tolerance
         expected_step = (right - left) / sub_intervals
         for i in range(1, len(nodes)):
             if not np.isclose(nodes[i] - nodes[i - 1], expected_step):

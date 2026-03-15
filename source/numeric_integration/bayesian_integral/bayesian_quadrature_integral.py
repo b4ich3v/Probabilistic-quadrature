@@ -9,6 +9,7 @@ from source.numeric_integration.bayesian_integral.bayesian_quadrature_model.baye
 from source.numeric_integration.bayesian_integral.bayesian_quadrature_model.bayesian_quadrature_config import BQConfig
 
 
+# NumericIntegral adapter: fits a BQ model and returns posterior mean as the estimate
 class BayesianQuadratureIntegral(NumericIntegral):
     def __init__(self, func, measure: Measure, kernel: Kernel,
                  X: np.ndarray, y: np.ndarray, noise: float = 0.0, jitter: float = 1e-8) -> None:

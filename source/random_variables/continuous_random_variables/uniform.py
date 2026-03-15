@@ -3,6 +3,7 @@ import numpy as np
 from source.random_variables.random_variable import RandomVariable
 
 
+# 1D continuous uniform on [low, high]
 class Uniform(RandomVariable):
     def __init__(self, low: float, high: float):
         if high <= low:
@@ -19,6 +20,7 @@ class Uniform(RandomVariable):
         u = rng.random((n, 1))
         return self._low + u * (self._high - self._low)
 
+    # Returns -log(width) inside the support, -inf outside
     def log_prob(self, x: np.ndarray) -> np.ndarray:
         x = np.atleast_2d(x)
         if x.shape[1] != 1:

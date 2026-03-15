@@ -7,10 +7,12 @@ from source.numeric_integration.bayesian_integral.bayesian_quadrature_model.baye
 from source.numeric_integration.bayesian_integral.bayesian_quadrature_model.utils import kernel_mean_vector, ensure_2d
 
 
+# Greedy one-step-lookahead point selector for active Bayesian quadrature
 class ActiveBQSelector:
     def __init__(self, model: BayesianQuadratureModel):
         self.model = model
 
+    # Compute how much adding candidate would reduce integral posterior variance
     def variance_reduction(self, candidate: ArrayLike, noise: Optional[float] = None) -> tuple[float, float]:
         _, var_F = self.model.integral_posterior()
         candidate = ensure_2d(candidate)
@@ -23,22 +25,24 @@ class ActiveBQSelector:
         mu_f = self.model.mu_f
         L_factor = self.model.L_factor
 
-        k_vec = self.model.kernel(X, candidate)[:, 0]
+        k_vec = self.model.kernel(X, candidate)[:, 0]  # cross-covariance with training
         kxx = float(self.model.kernel(candidate, candidate)[0, 0] + noise ** 2)
         mu_c = np.asarray(
             kernel_mean_vector(candidate, self.model.kernel, self.model.measure,
                                mc_samples=self.model.config.mc_samples_mean)).squeeze()
 
         v = cho_solve(L_factor, k_vec)
-        s = kxx - k_vec @ v
+        s = kxx - k_vec @ v  # Schur complement (predictive variance at candidate)
         if s <= 0:
             return var_F, 0.0
 
+        # reduction = delta^2 / s where delta is the residual kernel mean
         delta = mu_c - k_vec @ cho_solve(L_factor, mu_f)
         reduction = float((delta ** 2) / s)
         new_var = max(var_F - reduction, 0.0)
         return new_var, reduction
 
+    # Pick the candidate with the largest variance reduction
     def greedy_select(self, candidates: ArrayLike, noise: Optional[float] = None) -> tuple[int, float, float]:
         candidates = ensure_2d(candidates)
         best_idx = -1

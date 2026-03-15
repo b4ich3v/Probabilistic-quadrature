@@ -3,10 +3,12 @@ from source.functions.interval import Interval
 from source.functions.function import Function
 
 
+# Composite trapezoidal rule, O(h^2) convergence
 class TrapezoidNumericIntegral(UniformGridNumericIntegral):
     def __init__(self, func: Function, interval: Interval, nodes: list[float], sub_intervals: int):
         super().__init__(func, interval, nodes, sub_intervals)
 
+    # h/2 * [f(x_0) + 2*sum(f(x_i)) + f(x_n)]
     def integrate(self) -> float:
         nodes = self._nodes
         f = self._function

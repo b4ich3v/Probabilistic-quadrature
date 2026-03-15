@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 
+# Hyperparameters for Bayesian Quadrature: noise, jitter, MC sample counts
 @dataclass
 class BQConfig:
     noise: float = 0.0

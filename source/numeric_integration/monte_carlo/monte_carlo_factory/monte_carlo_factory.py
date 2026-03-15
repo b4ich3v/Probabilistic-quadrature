@@ -5,6 +5,7 @@ from source.numeric_integration.monte_carlo.recursive_monte_carlo_integral impor
 from source.numeric_integration.monte_carlo.weighted_monte_carlo_integral import WeightedMonteCarloIntegral
 
 
+# Dispatches MC integrator construction by strategy enum
 class MonteCarloFactory:
     @staticmethod
     def create(pattern: MonteCarloIntegrationStrategy, *args, **kwargs) -> MonteCarloNumericIntegral:

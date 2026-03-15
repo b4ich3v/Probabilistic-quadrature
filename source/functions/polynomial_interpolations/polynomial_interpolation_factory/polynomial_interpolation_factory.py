@@ -9,6 +9,7 @@ from source.functions.polynomial_interpolations.hermite_interpolation_polynomial
 from source.functions.polynomial_interpolations.newton_interpolation_polynomial import NewtonInterpolationPoly
 
 
+# Dispatches interpolation construction by InterpolationPattern enum
 class PolynomialInterpolationFactory:
     @staticmethod
     def create(pattern: InterpolationPattern, nodes: list[float], values: list[float], *args, derivative_estimator: Optional[DerivativeEstimator] = None) -> InterpolationPoly:
@@ -17,6 +18,7 @@ class PolynomialInterpolationFactory:
         if pattern == InterpolationPattern.NEWTON:
             return NewtonInterpolationPoly(nodes, values)
         if pattern == InterpolationPattern.HERMITE:
+            # Fallback: build CentralDifference from (Function, precision) positional args
             if derivative_estimator is None:
                 if len(args) >= 2:
                     derivative_estimator = CentralDifferenceDerivativeEstimator(args[0], args[1])

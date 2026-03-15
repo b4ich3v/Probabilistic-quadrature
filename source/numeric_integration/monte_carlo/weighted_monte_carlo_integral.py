@@ -7,6 +7,7 @@ from source.random_variables.random_variable import RandomVariable
 from source.random_variables.continuous_random_variables.uniform import Uniform
 
 
+# Importance-sampling MC: E[f] ≈ (1/n) * sum w(x_i) * f(x_i)
 class WeightedMonteCarloIntegral(MonteCarloNumericIntegral):
     def __init__(self, func: Callable, measure: Measure, n_samples: int,
         proposal_sampler: Callable[[int, RandomVariable], np.ndarray], weight_fn: Callable[[np.ndarray], np.ndarray], rv: RandomVariable | None = None):

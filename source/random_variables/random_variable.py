@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 
 
+# Abstract random variable with sampling, density, and moment interface
 class RandomVariable(ABC):
     @property
     @abstractmethod
@@ -19,5 +20,6 @@ class RandomVariable(ABC):
     @abstractmethod
     def var(self) -> np.ndarray: ...
 
+    # Default: exponentiate log_prob; override if a direct formula is cheaper
     def pdf(self, x: np.ndarray) -> np.ndarray:
         return np.exp(self.log_prob(x))

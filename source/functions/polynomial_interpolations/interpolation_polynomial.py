@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 
+# Base class for polynomial interpolation through (node, value) pairs
 class InterpolationPoly(ABC):
     def __init__(self, nodes: list[float], values: list[float]) -> None:
         if len(nodes) == 0:

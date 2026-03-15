@@ -1,3 +1,4 @@
+# Closed interval [left, right] on the real line
 class Interval:
     def __init__(self, left: float | int, right: float | int) -> None:
         if not isinstance(left, (int, float)) or not isinstance(right, (int, float)):
@@ -30,6 +31,7 @@ class Interval:
             return NotImplemented
         return self._left == other._left and self._right == other._right
 
+    # Lexicographic ordering on (left, right)
     def __lt__(self, other) -> bool:
         if not isinstance(other, Interval):
             return NotImplemented

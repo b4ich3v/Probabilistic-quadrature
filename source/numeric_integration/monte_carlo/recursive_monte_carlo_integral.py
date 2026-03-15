@@ -6,6 +6,7 @@ from source.measures.uniform_box_measure import UniformBoxMeasure
 from source.random_variables.continuous_random_variables.uniform import Uniform
 
 
+# Stratified MC via recursive bisection; 1D only, needs n >= 2^depth
 class RecursiveMonteCarloIntegral(MonteCarloNumericIntegral):
     def __init__(self, func: Callable, measure: UniformBoxMeasure, n_samples: int, depth: int = 1, **kwargs):
         if not isinstance(measure, UniformBoxMeasure):
@@ -29,11 +30,13 @@ class RecursiveMonteCarloIntegral(MonteCarloNumericIntegral):
         if n <= 0:
             raise ValueError("Each recursion branch needs at least one sample")
         if depth == 0:
+            # Leaf: standard MC on this sub-interval
             sampler = Uniform(a, b)
             xs = sampler.sample(n)
             vals = self._function(xs)
             return float(np.mean(vals)) * (b - a)
 
+        # Split interval at midpoint and distribute samples
         mid = 0.5 * (a + b)
         left_n = n // 2
         right_n = n - left_n

@@ -5,6 +5,7 @@ from source.measures.measure import Measure
 from source.numeric_integration.bayesian_integral.bayesian_quadrature_model.utils import kernel_mean_vector, kernel_integral_variance
 
 
+# Computes mu_f = E_mu[k(X, .)] and sigma_f^2 = E_mu[E_mu[k(., .)]]
 class BQIntegralTermsComputer:
     def __init__(self, kernel: Kernel, measure: Measure, mc_samples_mean: int, mc_samples_var: int):
         self.kernel = kernel

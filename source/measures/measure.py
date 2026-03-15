@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 
 
+# Abstract probability measure with dimensionality and sampling
 class Measure(ABC):
     @property
     @abstractmethod

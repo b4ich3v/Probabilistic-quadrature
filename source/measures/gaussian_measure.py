@@ -4,6 +4,7 @@ from source.measures.measure import Measure
 from source.random_variables.continuous_random_variables.normal import Normal
 
 
+# Gaussian measure N(mean, cov); uses fast diagonal path when cov is diagonal
 class GaussianMeasure(Measure):
     def __init__(self, mean: np.ndarray, cov: np.ndarray):
         mean, cov, std, is_diag = self._prepare_params(mean, cov)
@@ -24,7 +25,7 @@ class GaussianMeasure(Measure):
         if not np.allclose(cov, cov.T):
             raise ValueError("covariance must be symmetric")
 
-        is_diag = np.allclose(cov, np.diag(np.diag(cov)))
+        is_diag = np.allclose(cov, np.diag(np.diag(cov)))  # detect diagonal for fast sampling
         std = np.sqrt(np.diag(cov))
         return mean, cov, std, is_diag
 

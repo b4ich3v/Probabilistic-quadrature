@@ -6,6 +6,7 @@ from source.numeric_integration.numeric_integral import NumericIntegral
 from source.random_variables.random_variable import RandomVariable
 
 
+# Base class for Monte Carlo integration; stores stderr after integrate()
 class MonteCarloNumericIntegral(NumericIntegral):
     def __init__(self, func: Callable, measure: Measure, n_samples: int,
                  rv: Optional[RandomVariable] = None) -> None:

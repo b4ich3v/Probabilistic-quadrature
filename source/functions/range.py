@@ -1,3 +1,4 @@
+# Codomain bounds for function output validation
 class Range:
     def __init__(self, lower: float, upper: float):
         if lower > upper:
@@ -27,6 +28,7 @@ class Range:
     def __contains__(self, y: float) -> bool:
         return self.contains(y)
 
+    # Project y onto [lower, upper]
     def clamp(self, y: float) -> float:
         return self._upper if y > self._upper else self._lower if y < self._lower else y
 

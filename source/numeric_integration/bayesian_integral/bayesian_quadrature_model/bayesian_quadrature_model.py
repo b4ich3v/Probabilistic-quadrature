@@ -12,6 +12,7 @@ from source.numeric_integration.bayesian_integral.bayesian_quadrature_model.baye
 from source.numeric_integration.bayesian_integral.bayesian_quadrature_model.utils import gp_posterior_predictive
 
 
+# Core BQ model: GP fit + integral posterior (mean and variance)
 class BayesianQuadratureModel:
     def __init__(self, kernel: Kernel, measure: Measure, config: Optional[BQConfig] = None):
         self.kernel = kernel
@@ -42,6 +43,7 @@ class BayesianQuadratureModel:
         self._recompute_cache()
         return self
 
+    # Refit GP and recompute kernel mean / integrated variance
     def _recompute_cache(self) -> None:
         ds = self.dataset
         if ds is None:
@@ -50,6 +52,7 @@ class BayesianQuadratureModel:
         mu_f, sigma_f2 = self._integral_terms.compute(ds.X)
         self._state = BQPosteriorState(L_factor=self._gp.L_factor, mu_f=mu_f, sigma_f2=sigma_f2)
 
+    # mean_F = mu_f^T * K^{-1} * y, var_F = sigma_f^2 - mu_f^T * K^{-1} * mu_f
     def integral_posterior(self) -> tuple[float, float]:
         self._check_fitted()
         state = self._state

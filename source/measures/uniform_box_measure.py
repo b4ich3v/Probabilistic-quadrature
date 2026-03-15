@@ -4,6 +4,7 @@ from source.measures.measure import Measure
 from source.random_variables.continuous_random_variables.uniform_box import ContinuousUniformBox
 
 
+# Uniform measure over a d-dimensional hyper-rectangle [lower, upper]
 class UniformBoxMeasure(Measure):
     def __init__(self, lower: np.ndarray, upper: np.ndarray):
         rv = ContinuousUniformBox(lower, upper)

@@ -3,6 +3,7 @@ from source.functions.interval import Interval
 from source.functions.function import Function
 
 
+# Composite midpoint rectangle rule, O(h^2) convergence
 class RectangleNumericIntegral(UniformGridNumericIntegral):
     def __init__(self, func: Function, interval: Interval, nodes: list[float], sub_intervals: int):
         super().__init__(func, interval, nodes, sub_intervals)

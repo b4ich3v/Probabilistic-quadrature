@@ -8,6 +8,7 @@ from source.kernels.rbf_kernel import RBFKernel
 from source.measures.gaussian_measure import GaussianMeasure
 
 
+# Normalize input to shape (n_samples, d)
 def ensure_2d(X: ArrayLike) -> np.ndarray:
     X = np.atleast_2d(np.asarray(X, dtype=float))
     if X.ndim != 2:
@@ -15,17 +16,21 @@ def ensure_2d(X: ArrayLike) -> np.ndarray:
     return X
 
 
+# Closed-form kernel mean E_mu[k(x, .)] for RBF kernel + Gaussian measure
+# Uses slogdet for numerical stability in high dimensions
 def _gaussian_kernel_mean_rbf(X: np.ndarray, kernel: RBFKernel, measure: GaussianMeasure) -> np.ndarray:
     d = measure.dim
     ell2 = kernel.lengthscale ** 2
     cov = measure.cov
     mean = measure.mean
-    Sigma = cov + ell2 * np.eye(d)
+    Sigma = cov + ell2 * np.eye(d)  # Sigma_measure + ell^2 * I
 
+    # Log-space normalization: log(sigma^2) + 0.5*(logdet(ell^2*I) - logdet(Sigma))
     sign, logdet_Sigma = np.linalg.slogdet(Sigma)
     _, logdet_ell = np.linalg.slogdet(ell2 * np.eye(d))
     log_norm = np.log(kernel.variance) + 0.5 * (logdet_ell - logdet_Sigma)
 
+    # Mahalanobis distance via Cholesky solve
     L_sigma = np.linalg.cholesky(Sigma)
     diff = X - mean
     alpha = np.linalg.solve(L_sigma, diff.T)
@@ -33,11 +38,12 @@ def _gaussian_kernel_mean_rbf(X: np.ndarray, kernel: RBFKernel, measure: Gaussia
     return np.exp(log_norm + exponents)
 
 
+# Closed-form integrated kernel variance E_mu[E_mu[k(., .)]] for RBF + Gaussian
 def _gaussian_kernel_variance_rbf(kernel: RBFKernel, measure: GaussianMeasure) -> float:
     d = measure.dim
     ell2 = kernel.lengthscale ** 2
     Sigma = measure.cov
-    Sigma_eff = 2.0 * Sigma + ell2 * np.eye(d)
+    Sigma_eff = 2.0 * Sigma + ell2 * np.eye(d)  # effective covariance from double integral
 
     _, logdet_ell = np.linalg.slogdet(ell2 * np.eye(d))
     sign, logdet_eff = np.linalg.slogdet(Sigma_eff)
@@ -45,12 +51,14 @@ def _gaussian_kernel_variance_rbf(kernel: RBFKernel, measure: GaussianMeasure) -
     return float(np.exp(log_norm))
 
 
+# mu_f(x_i) = E_mu[k(x_i, .)]; analytic for RBF+Gaussian, MC fallback otherwise
 def kernel_mean_vector(X: ArrayLike, kernel: Kernel, measure, mc_samples: int = 2048,
                        rng: np.random.Generator | None = None) -> np.ndarray:
     X = ensure_2d(X)
     if isinstance(kernel, RBFKernel) and isinstance(measure, GaussianMeasure):
         return _gaussian_kernel_mean_rbf(X, kernel, measure)
 
+    # MC approximation: (1/M) * sum_j k(z_j, x_i) where z_j ~ mu
     samples = measure.sample(mc_samples, rng=rng)
     K = kernel(samples, X)
     weights = np.full(mc_samples, 1.0 / mc_samples)
@@ -58,11 +66,13 @@ def kernel_mean_vector(X: ArrayLike, kernel: Kernel, measure, mc_samples: int = 
         return K.T @ weights
 
 
+# sigma_f^2 = E_mu[E_mu[k(., .)]]; analytic for RBF+Gaussian, MC fallback otherwise
 def kernel_integral_variance(kernel: Kernel, measure, mc_samples: int = 4096,
                              rng: np.random.Generator | None = None) -> float:
     if isinstance(kernel, RBFKernel) and isinstance(measure, GaussianMeasure):
         return _gaussian_kernel_variance_rbf(kernel, measure)
 
+    # U-statistic estimator: sum off-diagonal K(z_i, z_j) / (n*(n-1))
     samples = measure.sample(mc_samples, rng=rng)
     K = kernel(samples, samples)
     np.fill_diagonal(K, 0.0)
@@ -72,6 +82,7 @@ def kernel_integral_variance(kernel: Kernel, measure, mc_samples: int = 4096,
         return max(est, 0.0)
 
 
+# Standalone GP predictive mean and variance; reuses L_factor if provided
 def gp_posterior_predictive(
     X_train: ArrayLike, y_train: ArrayLike, X_test: ArrayLike,
     kernel: Kernel, noise: float = 0.0, L_factor: Optional[tuple] = None) -> tuple[np.ndarray, np.ndarray]:

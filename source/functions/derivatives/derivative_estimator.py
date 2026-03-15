@@ -6,6 +6,7 @@ from source.functions.function import Function
 from source.functions.interval import Interval
 
 
+# Abstract finite-difference derivative estimator; precision = step size h
 class DerivativeEstimator(ABC):
     def __init__(self, function: Function, precision: float) -> None:
         if precision <= 0:
@@ -16,6 +17,7 @@ class DerivativeEstimator(ABC):
     @abstractmethod
     def calculate_derivative_at(self, point: float) -> float: ...
 
+    # Overlay the function and its tangent line at the given point
     def plot_at(self, point: float, interval: Interval) -> None:
         x_coords = np.linspace(interval.left, interval.right, 1000)
         f_at_point = self._function(point)
